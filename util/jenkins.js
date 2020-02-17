@@ -1,4 +1,4 @@
-const { Workflow, Job, Step } = require('../model/workflow.js');
+const { Pipeline, Workflow, Job, Step } = require('../model/workflow.js');
 const { pullDirective, checkDirective, 
   removeComments, jenkinsfileToArray, 
   getBalancedIndex, getSection } = require('./jfParse.js');
@@ -52,7 +52,7 @@ const processStanzas = (arr) => {
       // TODO: Sanity check how we want to handle 'stages'
     } else if (checkDirective(arr[i], 'stage')) {
       let stageName = getStageName(arr[i]);
-      workflow.newJob(stageName);
+      workflow.addJob(stageName);
       workflow.jobs[workflow.jobs.length - 1].env = getEnvironment(getSection(arr.slice([i])));
     } else if (checkDirective(arr[i], 'agent')) {
       // TODO: Add logic to assign correct Docker executor based on JF
@@ -60,13 +60,13 @@ const processStanzas = (arr) => {
       // TODO: Less hacky
       workflow.jobs[workflow.jobs.length - 1].steps = getSteps(arr.slice([i]));
     } else if (checkDirective(arr[i], 'post')) {
-      workflow.newComment('post', getSection(arr.slice([i])));;
+      workflow.addComment('post', getSection(arr.slice([i])));;
     } else if (checkDirective(arr[i], 'options')) {
-      workflow.newComment('options', getSection(arr.slice([i])));;
+      workflow.addComment('options', getSection(arr.slice([i])));;
     } else if (checkDirective(arr[i], 'triggers')) {
-      workflow.newComment('triggers', getSection(arr.slice([i])));;
+      workflow.addComment('triggers', getSection(arr.slice([i])));;
     } else if (checkDirective(arr[i], 'when')) {
-      workflow.newComment('when', getSection(arr.slice([i])));;
+      workflow.addComment('when', getSection(arr.slice([i])));;
     }
   }
   

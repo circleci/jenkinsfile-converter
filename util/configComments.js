@@ -13,8 +13,8 @@ const writeComments = (workflow) => {
   let output = '\n\n';
   const commentArr = workflow.comments;
   for (let i = 0; i < commentArr.length; i++) {
-    let kw = commentArr[i].keyword;
-    let linesArr = commentArr[i].content;
+    let kw = commentArr[i].kw;
+    let linesArr = commentArr[i].body;
     output += applyCommentDescription(kw, linesArr);
   }
   return output;
