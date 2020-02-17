@@ -1,10 +1,13 @@
+const { commentsLib } = require('../static/comments.js');
+
 const Pipeline = function() {
+  this.env = {};
   this.workflows = [];
 }
 
 const Workflow = function() {
-  // Workflow-level env vars not supported
-  // this.env = {};
+  // AKA pipeline parameters
+  this.env = {};
   this.name = "";
   this.comments = [];
   this.jobs = []; 
@@ -29,10 +32,7 @@ const Step = function(cmd, supported) {
   this.env = {};
   this.kw = "";
   // boolean, used to write comments
-  // this.supported = supported;
-  this.supported = (kw) => {
-
-  }
+  this.supported = supported;
   // expect this to be a string
   this.cmd = cmd
 }

@@ -14,9 +14,11 @@ const getSteps = (arr) => {
   let stepsArr = [];
   let endIndex = getBalancedIndex(arr);
   for (let i = 1; i < endIndex; i++) {
+    // If the line doesn't begin with a directive, add a Step to Jobs
     if (!pullDirective(arr[i])) {
       stepsArr.push(new Step(arr[i], true))
     } else if (pullDirective(arr[i]).startsWith('script')) {
+    // Handle script blocks. TODO: abstract to handle other kws https://jenkins.io/doc/pipeline/steps/
       let endScriptIndex = getBalancedIndex(arr.slice(i));
       let cmd = getSection(arr.slice(i)).join('\\\n');
       let step = new Step(cmd, false);
