@@ -1,5 +1,6 @@
 const { commentsLib } = require('../static/comments.js');
 
+// Do we need this?
 const Pipeline = function() {
   this.env = {};
   this.workflows = [];
@@ -28,11 +29,9 @@ const Job = function(name) {
   }
 }
 
-const Step = function(cmd, supported) {
+const Step = function(cmd) {
   this.env = {};
   this.kw = "";
-  // boolean, used to write comments
-  this.supported = supported;
   // expect this to be a string
   this.cmd = cmd
 }

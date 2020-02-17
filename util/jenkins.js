@@ -29,7 +29,7 @@ const getSteps = (arr) => {
   return stepsArr
 }
 
-// getEnvironment returns an kv obj of env vars. Currently only tested on stage level
+// getEnvironment returns an kv obj of env vars. naive implementation
 const getEnvironment = (arr) => {
   let env = {};
   for (let i = 0; i < arr.length; i++) {
@@ -55,6 +55,7 @@ const processStanzas = (arr) => {
     } else if (checkDirective(arr[i], 'stage')) {
       let stageName = getStageName(arr[i]);
       workflow.addJob(stageName);
+      // TODO: Cleaner implementation of env vars
       workflow.jobs[workflow.jobs.length - 1].env = getEnvironment(getSection(arr.slice([i])));
     } else if (checkDirective(arr[i], 'agent')) {
       // TODO: Add logic to assign correct Docker executor based on JF

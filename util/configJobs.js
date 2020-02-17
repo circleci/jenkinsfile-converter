@@ -15,10 +15,10 @@ const isPotentialError = (cmd) => {
 const writeJobSteps = (job) => {
   let output = ''
   for (let i = 0; i < job.steps.length; i++) {
-    if (!job.steps[i].supported || job.steps[i].cmd == '}' || job.steps[i].cmd == ']' ) {
-      // Hacky workaround to avoid hanging brackets. TODO: More holistic solution
+    if (job.steps[i].cmd == '}' || job.steps[i].cmd == ']') {
+      // Workaround to avoid hanging brackets. TODO: More holistic solution
     } else if (isPotentialError(job.steps[i].cmd)) {
-      output += comment('The following command may not run on CircleCI. Please review before using.');
+      output += padding('- run: exit 1 # The following command will not run successfully on CircleCI. Please review our documentation.', 6) + '\n';
       output += padding('- run: ' + job.steps[i].cmd, 6) + '\n';
     } else
       output += padding('- run: ' + job.steps[i].cmd, 6) + '\n';
