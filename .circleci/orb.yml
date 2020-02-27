@@ -1,0 +1,77 @@
+version: 2.1
+description: |
+  POC for converting declarative Jenkinsfiles to CircleCI 2.0 configs.
+
+executors:
+  base:
+    docker:
+      - image: cimg/base:2020.01
+  convertor:
+    docker:
+      - image: circleci/node:12.8.0
+
+commands:
+  setup:
+    description: "Pre-steps to copy Jenkinsfile into workspace for conversion to config.yml"
+    parameters:
+      jenkinsfile-path:
+        description: "Filepath + filename of Jenkinsfile to be converted."
+        type: string
+        default: "./Jenkinsfile"
+    steps:
+      - checkout
+      - run: mkdir -p ~/jenkinsfile-export
+      # Confirm file path to local Jenkinsfile
+      - run: cp << parameters.jenkinsfile-path >> ~/jenkinsfile-export
+      - persist_to_workspace:
+          root: ~/jenkinsfile-export
+          paths: Jenkinsfile
+
+  install:
+    description: "Download and install scripts"
+    steps:
+      - run: mkdir -p jcci
+      - run: git clone "https://github.com/heug/jenkinsfile-helper.git" ./jcci
+
+  convert-to-circleci:
+    description: "Convert Jenkinsfile to CircleCI config.yml"
+    parameters:
+      input-path:
+        description: Filepath and filename of Jenkinsfile.
+        type: string
+        default: "~/jenkinsfile-export/Jenkinsfile"
+    steps:
+      - attach_workspace:
+          at: ~/jenkinsfile-export
+      - run: node ./jcci/index.js << parameters.input-path >>
+      - store_artifacts:
+          path: ~/project/jcci/config.yml
+
+examples:
+  jenkinsfile-to-circleci:
+    description: Easily generate a CircleCI config.yml from an existing Jenkinsfile.
+    usage:
+        version: 2.1
+
+        orbs:
+          j-cci: heug/jcci@x.y
+
+        jobs:
+          export-jenkinsfile:
+            executor: j-cci/base
+            steps:
+              - j-cci/setup
+          convert:
+            executor: j-cci/convertor
+            steps:
+              - j-cci/install
+              - j-cci/convert-to-circleci
+
+        workflows:
+          version: 2
+          jcci:
+            jobs:
+              - export-jenkinsfile
+              - convert:
+                  requires:
+                    - export-jenkinsfile
