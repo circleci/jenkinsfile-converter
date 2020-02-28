@@ -22,6 +22,7 @@
   "homepage": "https://github.com/heug/jenkinsfile-circleci#readme",
   "dependencies": {},
   "devDependencies": {
+    "chai": "^4.2.0",
     "mocha": "^7.0.0"
   }
 }
