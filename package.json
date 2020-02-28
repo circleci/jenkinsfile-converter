@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/johnstonjacob/jenkins-to-cci.git"
+    "url": "git+https://github.com/heug/jenkinsfile-circleci.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/johnstonjacob/jenkins-to-cci/issues"
+    "url": "https://github.com/heug/jenkinsfile-circleci/issues"
   },
-  "homepage": "https://github.com/johnstonjacob/jenkins-to-cci#readme",
+  "homepage": "https://github.com/heug/jenkinsfile-circleci#readme",
   "dependencies": {},
   "devDependencies": {
     "mocha": "^7.0.0"
