@@ -10,6 +10,7 @@ const Workflow = function() {
   // AKA pipeline parameters
   this.env = {};
   this.name = "";
+  // array of commented lines that are appended to the end of a config file
   this.comments = [];
   this.jobs = []; 
   this.addComment = (kw, body) => {

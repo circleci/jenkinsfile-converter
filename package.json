@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --recursive",
     "prettier": "prettier ./**/*.js --write"
   },
   "repository": {

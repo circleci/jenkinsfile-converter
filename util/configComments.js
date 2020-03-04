@@ -1,12 +1,22 @@
 const { commentsLib } = require ('../static/comments.js');
 const { comment, multilineComment } = require('./configGen.js');
 
-const applyCommentDescription = (kw, linesArr) => {
-  let output = ''
-  output += comment(kw + commentsLib[kw].reason);
-  output += comment('Please refer to ' + commentsLib[kw].link + ' for more information.');
-  output += multilineComment.apply(null, linesArr) + '\n';
-  return output;
+const applyCommentDescription = (kw, linesArr, dict) => {
+  let output = '';
+  dict = dict || commentsLib;
+
+  try {
+    output += comment(kw + dict[kw].reason);
+    output += comment('Please refer to ' + dict[kw].link + ' for more information.');
+    output += multilineComment.apply(null, linesArr) + '\n';
+  }
+  catch {
+    output += comment(kw + ' is not recognized as a valid keyword.');
+    output += multilineComment.apply(null, linesArr) + '\n';
+  }
+  finally {
+    return output;
+  }
 }
 
 const writeComments = (workflow) => {
@@ -21,4 +31,4 @@ const writeComments = (workflow) => {
 }
 
 
-module.exports = { writeComments };
+module.exports = { applyCommentDescription, writeComments };

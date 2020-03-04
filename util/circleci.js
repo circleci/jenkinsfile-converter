@@ -13,22 +13,3 @@ const createConfig = (workflowObj) => {
 }
 
 module.exports = { createConfig };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
