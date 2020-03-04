@@ -1,7 +1,17 @@
 version: 2.1
 
 jobs:
-  build:
+  build-and-unit-test:
+    docker:
+      - image: circleci/node:12.8.0
+    working_directory: ~/project
+    steps:
+      - checkout
+      - run:
+          name: run unit tests
+          command: npm test
+  
+  generate-configs:
     docker:
       - image: circleci/node:12.8.0
     working_directory: ~/project
@@ -20,8 +30,8 @@ jobs:
           paths:
             - artifacts/
             - test/validateConfigs.sh
-
-  test:
+  
+  output-smoke-test:
     docker:
       - image: circleci/node:12.8.0
     working_directory: ~/project
@@ -39,8 +49,11 @@ workflows:
   version: 2
   btd:
     jobs:
-      - build
-      - test:
+      - build-and-unit-test
+      - generate-configs:
           requires:
-            - build
+            - build-and-unit-test
+      - output-smoke-test:
+          requires:
+            - generate-configs
 
