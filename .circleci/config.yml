@@ -7,6 +7,9 @@ jobs:
     working_directory: ~/project
     steps:
       - checkout
+      - run: 
+          name: install dependencies
+          command: npm i
       - run:
           name: run unit tests
           command: npm test
