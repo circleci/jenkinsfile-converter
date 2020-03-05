@@ -42,4 +42,4 @@ const Comment = function(kw, body) {
   this.body = body;
 }
 
-module.exports = { Pipeline, Workflow, Job, Step }
+module.exports = { Pipeline, Workflow, Job, Step, Comment }
