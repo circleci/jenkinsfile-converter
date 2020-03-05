@@ -41,7 +41,7 @@ jobs:
     steps:
       - run:
           name: install CircleCI CLI
-          command: curl -fLSs https://circle.ci/cli | sudo bash
+          command: sudo curl -fLSs https://circle.ci/cli | sudo bash
       - attach_workspace:
           at: ~/project
       - run:
