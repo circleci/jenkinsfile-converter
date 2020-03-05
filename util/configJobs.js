@@ -38,4 +38,4 @@ const writeJobs = (workflow) => {
   return output;
 }
 
-module.exports = { writeJobs }
+module.exports = { isPotentialError, writeJobSteps, writeJobs }

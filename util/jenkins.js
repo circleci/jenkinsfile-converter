@@ -92,4 +92,4 @@ const parseJenkinsfile = (jenkinsfile) => {
   return processStanzas(jenkinsfileToArray(removeComments(jenkinsfile)));
 }
 
-module.exports = { parseJenkinsfile };
+module.exports = { getStageName, getSteps, getEnvironment, processStanzas, parseJenkinsfile };

@@ -1,5 +1,8 @@
 #Generic gitignore
 
+# Apple things
+.DS_STORE
+
 # Logs
 logs
 *.log

@@ -34,4 +34,4 @@ const writeWorkflows = (workflow) => {
   return output;
 }
 
-module.exports = { writeWorkflows }
+module.exports = { writeJobToWorkflow, writeRequires, writeWorkflows }
