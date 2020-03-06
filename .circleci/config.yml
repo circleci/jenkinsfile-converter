@@ -7,9 +7,18 @@ jobs:
     working_directory: ~/project
     steps:
       - checkout
+      - restore_cache:
+        keys:
+          - v1-npm-deps-{{ .branch}}-{{ checksum "package-lock.json "}}
+          - v1-npm-deps-{{ .branch}}
+          - v1-npm-deps
       - run: 
           name: install dependencies
           command: npm i
+      - save_cache:
+          key: v1-npm-deps-{{ .branch}}-{{ checksum "package-lock.json "}}
+          paths:
+            -node_modules
       - run:
           name: run unit tests
           command: npm test
@@ -41,7 +50,7 @@ jobs:
     steps:
       - run:
           name: install CircleCI CLI
-          command: sudo curl -fLSs https://circle.ci/cli | sudo bash
+          command: curl -fLSs --http1.1 https://circle.ci/cli | sudo bash
       - attach_workspace:
           at: ~/project
       - run:
