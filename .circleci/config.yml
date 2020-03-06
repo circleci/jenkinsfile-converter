@@ -8,10 +8,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys:
-          - v1-npm-deps-{{ .branch}}-{{ checksum "package-lock.json "}}
-          - v1-npm-deps-{{ .branch}}
-          - v1-npm-deps
+          keys:
+            - v1-npm-deps-{{ .branch}}-{{ checksum "package-lock.json "}}
+            - v1-npm-deps-{{ .branch}}
+            - v1-npm-deps
       - run: 
           name: install dependencies
           command: npm i
