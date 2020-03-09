@@ -18,7 +18,7 @@ jobs:
       - save_cache:
           key: v1-npm-deps-{{ .branch}}-{{ checksum "package-lock.json "}}
           paths:
-            -node_modules
+            - node_modules
       - run:
           name: run unit tests
           command: npm test
