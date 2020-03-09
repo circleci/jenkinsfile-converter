@@ -44,8 +44,19 @@ commands:
       - attach_workspace:
           at: ~/jenkinsfile-export
       - run: node ./jcci/index.js << parameters.input-path >>
+      - persist_to_workspace:
+          root: ~/project/jcci
+          paths: config.yml
       - store_artifacts:
           path: ~/project/jcci/config.yml
+
+  validate-deliverables:
+    description: "Validate output CircleCI config.yml"
+    steps:
+      - attach_workspace:
+          at: ~/deliverables
+      - run: curl -fLSs --http1.1 https://circle.ci/cli | sudo bash
+      - run: circleci config validate ~/deliverables/config.yml
 
 examples:
   jenkinsfile-to-circleci:
@@ -66,6 +77,10 @@ examples:
             steps:
               - j-cci/install
               - j-cci/convert-to-circleci
+          validate:
+            executor: j-cci/base
+            steps:
+              - j-cci/validate-deliverables
 
         workflows:
           version: 2
@@ -75,3 +90,6 @@ examples:
               - convert:
                   requires:
                     - export-jenkinsfile
+              - validate:
+                  requires:
+                    - convert
