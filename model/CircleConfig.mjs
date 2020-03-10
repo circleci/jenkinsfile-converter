@@ -67,15 +67,18 @@ class CircleConfig extends ConfigStanza {
      * @param {number} version 
      * @param {{ [key: string]: CircleJob }} jobs 
      */
-    constructor(version, jobs) {
+    constructor(version) {
         super();
 
         this.version = version;
-        this.jobs = jobs;
+        this.jobs = {};
 
         this.workflows = {
             version: 2
         };
+
+        Object.defineProperty(this, "toJSON", { enumerable: false });
+        Object.defineProperty(this, "toYAML", { enumerable: false });
     }
 
     toJSON() {
