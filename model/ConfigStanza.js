@@ -12,4 +12,4 @@ class ConfigStanza {
     }
 }
 
-export { ConfigStanza };
+module.exports = { ConfigStanza };
