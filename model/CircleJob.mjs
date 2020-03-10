@@ -63,13 +63,10 @@ class CircleJob extends ConfigStanza {
      */
     resource_class;
 
-    /**
-     * @param {CircleJobStep[]} steps 
-     */
-    constructor(steps) {
+    constructor() {
         super();
 
-        this.steps = steps;
+        this.steps = [];
     }
 }
 
