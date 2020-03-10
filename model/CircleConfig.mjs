@@ -65,7 +65,6 @@ class CircleConfig extends ConfigStanza {
 
     /**
      * @param {number} version 
-     * @param {{ [key: string]: CircleJob }} jobs 
      */
     constructor(version) {
         super();
