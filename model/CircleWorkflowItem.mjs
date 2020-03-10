@@ -14,13 +14,10 @@ class CircleWorkflowItem extends ConfigStanza {
      */
     triggers;
 
-    /**
-     * @param {(string | { [jobName: string]: CircleWorkflowJobCondition })[]} jobs 
-     */
-    constructor(jobs) {
+    constructor() {
         super();
 
-        this.jobs = jobs;
+        this.jobs = [];
     }
 }
 
