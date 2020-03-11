@@ -1,9 +1,7 @@
-const { ConfigStanza } = require('./ConfigStanza.js')
-
 /**
  * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L5
  */
-class CircleJob extends ConfigStanza {
+class CircleJob {
     /**
      * Note: Respect
      * https://circleci.com/docs/2.0/configuration-reference/#job_name
@@ -64,8 +62,6 @@ class CircleJob extends ConfigStanza {
     resource_class;
 
     constructor() {
-        super();
-
         this.steps = [];
     }
 }

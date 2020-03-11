@@ -1,9 +1,7 @@
-const { ConfigStanza } = require('./ConfigStanza.js')
-
 /**
  * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L166
  */
-class CircleJobDockerContainer extends ConfigStanza {
+class CircleJobDockerContainer {
     /**
      * @type {string}
      */
@@ -38,8 +36,6 @@ class CircleJobDockerContainer extends ConfigStanza {
      */
     environment;
 
-    environment;
-
     /**
      * @type {{ aws_access_key_id: string, aws_secret_access_key: string }}
      */
@@ -51,8 +47,6 @@ class CircleJobDockerContainer extends ConfigStanza {
     auth;
 
     constructor(image) {
-        super();
-
         this.image = image;
     }
 }

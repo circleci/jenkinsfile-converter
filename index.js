@@ -10,14 +10,12 @@ const { createConfig } = require('./util/circleci.js');
 const { openFile, verifyValid } = require('./util/file.js');
 const { parseJenkinsfile } = require('./util/jenkins.js');
 
-
-
 // TODO: Groovy library to interact with Jenkinsfiles?
 // TODO: YAML Library to handle/validate output?
 
 // TODO: Pair Jenkinsfiles syntax key with CCI syntax key
 
-function main() {
+{
   const config = [cfg.generateHeader(), 'version: 2.1'];
   const inputPath = process.argv[2];
   const outputPath = process.argv[3] || 'config.yml';
@@ -30,13 +28,12 @@ function main() {
     );
   }
 
-  const circleYAML = () => createConfig(parseJenkinsfile(jenkinsfile));
-  
-  fs.writeFile(path.join(__dirname, outputPath), circleYAML(), function(err) {
+  const circleConfig = parseJenkinsfile(jenkinsfile)
+  const circleYAML = circleConfig.toYAML();
+
+  fs.writeFile(path.join(__dirname, outputPath), circleYAML(), function (err) {
     if (err) throw err;
     console.log('file saved!')
   });
 
 }
-
-main();

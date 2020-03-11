@@ -1,9 +1,9 @@
-const { ConfigStanza } = require('./ConfigStanza.js');
+const yaml = require('js-yaml');
 
 /**
  * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L349
  */
-class CircleConfig extends ConfigStanza {
+class CircleConfig {
     /**
      * @type {number}
      */
@@ -64,11 +64,15 @@ class CircleConfig extends ConfigStanza {
     workflows;
 
     /**
+     * Hidden property for handling comments
+     * @type {string[]}
+     */
+    comments;
+
+    /**
      * @param {number} version 
      */
     constructor(version) {
-        super();
-
         this.version = version;
         this.jobs = {};
 
@@ -76,18 +80,22 @@ class CircleConfig extends ConfigStanza {
             version: 2
         };
 
+        this.comments = [];
+
+        Object.defineProperty(this, "comments", { enumerable: false });
         Object.defineProperty(this, "toJSON", { enumerable: false });
         Object.defineProperty(this, "toYAML", { enumerable: false });
     }
 
-    toJSON() {
-        // TODO: Delete empty properties for valid YAML generation?
-        return JSON.stringify(this);
-    }
-
     toYAML() {
-        // TODO: Convert to YAML
-        return this.toJSON();
+        let yamlString = yaml.safeDump(this, { skipInvalid: true });
+
+        yamlString += `\n# ${this.comments.join('\n# ')}`;
+
+        // For debugging - remove this
+        console.log(yamlString);
+
+        return yamlString;
     }
 }
 
