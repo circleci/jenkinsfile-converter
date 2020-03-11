@@ -1,5 +1,6 @@
 const { CircleConfig } = require('../model/CircleConfig.js');
-const { CircleJob } = require('../model/CircleJob.js')
+const { CircleJob } = require('../model/CircleJob.js');
+const { CircleJobDockerContainer } = require('../model/CircleJobDockerContainer.js')
 const { pullDirective, checkDirective,
   removeComments, jenkinsfileToArray,
   getBalancedIndex, getSection } = require('./jfParse.js');
@@ -85,71 +86,115 @@ const getEnvironment = (arr) => {
 
 // returns Workflow obj with Jobs
 const processStanzas = (arr) => {
-  const ret = new CircleConfig(2);
+  const ret = new CircleConfig(2.1);
 
-  const jobQueue = [];
-  let lastJob = null;
-
-  for (let i = 0; i < arr.length; i++) {
-    if (checkDirective(arr[i], 'stages')) {
-      // TODO: Sanity check how we want to handle 'stages'
-    } else if (checkDirective(arr[i], 'stage')) {
-      let stageName = getStageName(arr[i]);
-
-      lastJob = new CircleJob();
-      ret.jobs[stageName] = lastJob;
-      jobQueue.push(stageName);
-
-      {
-        // TODO: Cleaner implementation of env vars
-        lastJob.environment = getEnvironment(getSection(arr.slice([i])));
-
-        if (lastJob.environment.hasOwnProperty() === false) {
-          lastJob.environment = void 0;
-        }
+  {
+    // Preambles - define executors
+    ret.executors = {
+      advisory_for_users: `
+# You can replace your executor in any job with an executor defined here.
+# A good start would be replacing the image in your Docker executor with one of our convience images.
+# The Docker executor meets the needs of over 80% of our users.
+# https://circleci.com/docs/2.0/executor-types
+# List of convenience images: https://circleci.com/docs/2.0/circleci-images/#latest-image-tags-by-language`,
+      default: {
+        docker: [new CircleJobDockerContainer('circleci/python:3.6')]
+      },
+      macos: {
+        macos: {
+          xcode: "10.1.0",
+        },
+        working_directory: '~/proj',
+        shell: '/bin/bash --login'
+      },
+      windows: {
+        machine: {
+          image: "windows-server-2019:201908-06"
+        },
+        resource_class: 'windows.medium',
+        shell: 'bash'
       }
-    } else if (checkDirective(arr[i], 'agent')) {
-      // TODO: Add logic to assign correct Docker executor based on JF
-    } else if (checkDirective(arr[i], 'steps')) {
-      // TODO: Less hacky
-      lastJob.steps = getSteps(arr.slice([i]));
-    } else if (checkDirective(arr[i], 'post')) {
-      addCommentWithDescription(ret, 'post', getSection(arr.slice([i])));
-    } else if (checkDirective(arr[i], 'options')) {
-      addCommentWithDescription(ret, 'options', getSection(arr.slice([i])));
-    } else if (checkDirective(arr[i], 'triggers')) {
-      addCommentWithDescription(ret, 'triggers', getSection(arr.slice([i])));
-    } else if (checkDirective(arr[i], 'when')) {
-      addCommentWithDescription(ret, 'when', getSection(arr.slice([i])));
     }
+
+    ret.executors.default.working_directory = '~/proj';
   }
 
-  // Remove empty jobs
-  for (var i = jobQueue.length - 1; i >= 0; i--) {
-    if (ret.jobs[jobQueue[i]].steps.length == 0) {
-      jobQueue.splice(i, 1);
+  {
+    const jobQueue = [];
+    let lastJob = null;
+
+    for (let i = 0; i < arr.length; i++) {
+      if (checkDirective(arr[i], 'stages')) {
+        // TODO: Sanity check how we want to handle 'stages'
+      } else if (checkDirective(arr[i], 'stage')) {
+        let stageName = getStageName(arr[i]);
+
+        lastJob = new CircleJob();
+
+        lastJob.executor = 'default';
+        {
+          const envvars = getEnvironment(getSection(arr.slice([i])));
+          const envvarKeys = Object.getOwnPropertyNames(envvars);
+
+          if (envvarKeys.length > 0) {
+            lastJob.environment = envvars;
+
+            // TODO: If executor-level envvar is required uncomment below:
+            /*{
+              // Initialize envvar map for the default Docker executor
+              // (If not present)
+              if (ret.executors.default.docker[0].environment === void 0) {
+                ret.executors.default.docker[0].environment = {};
+              }
+
+              Object.getOwnPropertyNames(envvars).forEach((key) => {
+                ret.executors.default.docker[0].environment[key] = envvars[key];
+              });
+            }*/
+          }
+        }
+
+        ret.jobs[stageName] = lastJob;
+        jobQueue.push(stageName);
+
+      } else if (checkDirective(arr[i], 'agent')) {
+        // TODO: Add logic to assign correct Docker executor based on JF
+      } else if (checkDirective(arr[i], 'steps')) {
+        // TODO: Less hacky
+        lastJob.steps = getSteps(arr.slice([i]));
+      } else if (checkDirective(arr[i], 'post')) {
+        addCommentWithDescription(ret, 'post', getSection(arr.slice([i])));
+      } else if (checkDirective(arr[i], 'options')) {
+        addCommentWithDescription(ret, 'options', getSection(arr.slice([i])));
+      } else if (checkDirective(arr[i], 'triggers')) {
+        addCommentWithDescription(ret, 'triggers', getSection(arr.slice([i])));
+      } else if (checkDirective(arr[i], 'when')) {
+        addCommentWithDescription(ret, 'when', getSection(arr.slice([i])));
+      }
     }
+
+    // Remove empty jobs
+    for (var i = jobQueue.length - 1; i >= 0; i--) {
+      if (ret.jobs[jobQueue[i]].steps.length == 0) {
+        jobQueue.splice(i, 1);
+      }
+    }
+
+    ret.workflows["build-test-deploy"] = { jobs: [] };
+    jobQueue.map((jobName, index) => {
+      if (index === 0) {
+        ret.workflows["build-test-deploy"].jobs.push(jobName);
+      } else {
+        const jobWithCondition = {};
+
+        jobWithCondition[jobName] = {
+          requires: [jobQueue[index - 1]]
+        };
+
+        ret.workflows["build-test-deploy"].jobs.push(jobWithCondition);
+      }
+    });
   }
-
-  ret.workflows["build-test-deploy"] = { jobs: [] };
-  jobQueue.map((jobName, index) => {
-    if (index === 0) {
-      ret.workflows["build-test-deploy"].jobs.push(jobName);
-    } else {
-      const jobWithCondition = {};
-
-      jobWithCondition[jobName] = {
-        requires: [jobQueue[index - 1]]
-      };
-
-      ret.workflows["build-test-deploy"].jobs.push(jobWithCondition);
-    }
-  });
-
-  // For debugging inside workflows object
-  // for (var i = 0; i < workflow.jobs.length; i++) {
-  //   console.log(workflow.jobs[i])
-  // }
 
   return ret;
 }

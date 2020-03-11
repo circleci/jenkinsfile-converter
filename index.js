@@ -27,7 +27,11 @@ const { parseJenkinsfile } = require('./util/jenkins.js');
 
   {
     const circleConfig = parseJenkinsfile(jenkinsfile)
-    const circleYAML = circleConfig.toYAML();
+    let circleYAML = circleConfig.toYAML();
+
+    // Hacking - Advisory for executors is inserted as 
+    // We remove the property definition here and put the advisory text as comments.
+    circleYAML = circleYAML.replace(/^\s*advisory_for_users: \|-\s*\n\n/m, '');
 
     fs.writeFileSync(path.join(__dirname, outputPath), circleYAML);
     console.log('file saved!');
