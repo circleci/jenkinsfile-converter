@@ -97,8 +97,14 @@ const processStanzas = (arr) => {
       ret.jobs[stageName] = lastJob;
       jobQueue.push(stageName);
 
-      // TODO: Cleaner implementation of env vars
-      lastJob.environment = getEnvironment(getSection(arr.slice([i])))
+      {
+        // TODO: Cleaner implementation of env vars
+        lastJob.environment = getEnvironment(getSection(arr.slice([i])));
+
+        if (lastJob.environment.hasOwnProperty() === false) {
+          lastJob.environment = void 0;
+        }
+      }
     } else if (checkDirective(arr[i], 'agent')) {
       // TODO: Add logic to assign correct Docker executor based on JF
     } else if (checkDirective(arr[i], 'steps')) {
