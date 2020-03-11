@@ -83,17 +83,12 @@ class CircleConfig {
         this.comments = [];
 
         Object.defineProperty(this, "comments", { enumerable: false });
-        Object.defineProperty(this, "toJSON", { enumerable: false });
-        Object.defineProperty(this, "toYAML", { enumerable: false });
     }
 
     toYAML() {
         let yamlString = yaml.safeDump(this, { skipInvalid: true });
 
-        yamlString += `\n# ${this.comments.join('\n# ')}`;
-
-        // For debugging - remove this
-        console.log(yamlString);
+        yamlString += `\n# ${this.comments.join('\n').replace(/\n/g, '\n# ')}`;
 
         return yamlString;
     }
