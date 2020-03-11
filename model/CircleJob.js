@@ -57,6 +57,11 @@ class CircleJob {
     branches;
 
     /**
+     * @type {string | { [key: string]: string }}
+     */
+    executor;
+
+    /**
      * @type {string}
      */
     resource_class;

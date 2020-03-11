@@ -1,5 +1,10 @@
 const yaml = require('js-yaml');
 
+const { CircleJob } = require('./CircleJob.js');
+const { CircleJobDockerContainer } = require('./CircleJobDockerContainer.js');
+
+const x = new CircleJobDockerContainer()
+
 /**
  * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L349
  */
@@ -86,7 +91,7 @@ class CircleConfig {
     }
 
     toYAML() {
-        let ret = yaml.safeDump(this, { skipInvalid: true });
+        let ret = yaml.safeDump(this, { skipInvalid: true, lineWidth: 512 });
 
         if (this.comments.length > 0) {
             ret += `\n# ${this.comments.join('\n').trim().replace(/\n/g, '\n# ')}\n`;

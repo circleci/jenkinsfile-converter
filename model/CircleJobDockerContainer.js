@@ -46,6 +46,9 @@ class CircleJobDockerContainer {
      */
     auth;
 
+    /**
+     * @param {string} image 
+     */
     constructor(image) {
         this.image = image;
     }
