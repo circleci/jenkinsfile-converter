@@ -5,8 +5,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const cfg = require('./util/configGen.js');
-const { createConfig } = require('./util/circleci.js');
 const { openFile, verifyValid } = require('./util/file.js');
 const { parseJenkinsfile } = require('./util/jenkins.js');
 
@@ -16,7 +14,6 @@ const { parseJenkinsfile } = require('./util/jenkins.js');
 // TODO: Pair Jenkinsfiles syntax key with CCI syntax key
 
 {
-  const config = [cfg.generateHeader(), 'version: 2.1'];
   const inputPath = process.argv[2];
   const outputPath = process.argv[3] || 'config.yml';
   const jenkinsfile = openFile(inputPath);
@@ -30,9 +27,7 @@ const { parseJenkinsfile } = require('./util/jenkins.js');
 
   {
     const circleConfig = parseJenkinsfile(jenkinsfile)
-    console.log(circleConfig);
     const circleYAML = circleConfig.toYAML();
-    console.log(circleYAML)
 
     fs.writeFileSync(path.join(__dirname, outputPath), circleYAML);
     console.log('file saved!');

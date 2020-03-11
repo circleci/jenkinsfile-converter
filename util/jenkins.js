@@ -1,10 +1,42 @@
-const { Pipeline, Workflow, Job, Step } = require('../model/workflow.js');
 const { CircleConfig } = require('../model/CircleConfig.js');
 const { CircleJob } = require('../model/CircleJob.js')
 const { pullDirective, checkDirective,
   removeComments, jenkinsfileToArray,
   getBalancedIndex, getSection } = require('./jfParse.js');
 
+const commentsLib = {
+  "post": {
+    "reason": " is not directly transferrable from Jenkinsfile to config.yml.",
+    "link": "https://circleci.com/docs/2.0/configuration-reference/#the-when-attribute"
+  },
+  "options": {
+    "reason": " do not have a direct correlation to CircleCI syntax.",
+    "link": "https://circleci.com/docs/2.0/configuration-reference/#workflows"
+  },
+  "triggers": {
+    "reason": ` are supported in CircleCI, however we strongly recommend you achieve your
+  #  first green build before implementing this feature.`,
+    "link": "https://circleci.com/docs/2.0/workflows/#scheduling-a-workflow"
+  },
+  "when": {
+    "reason": " is treated differently in CircleCI from Jenkins.",
+    "link": "https://circleci.com/docs/2.0/configuration-reference/#the-when-attribute"
+  }
+}
+
+const addCommentWithDescription = (circleConfig, kw, linesArr, userDict) => {
+  const dict = userDict || commentsLib;
+
+  try {
+    circleConfig.comments.push(kw + dict[kw].reason);
+    circleConfig.comments.push('Please refer to ' + dict[kw].link + ' for more information.');
+    circleConfig.comments.push(linesArr.join(' '));
+  }
+  catch {
+    circleConfig.comments.push(kw + ' is not recognized as a valid keyword.');
+    circleConfig.comments.push(linesArr.join(' '));
+  }
+}
 
 const getStageName = (str) => {
   let begin = str.indexOf('(') + 2;
@@ -73,13 +105,13 @@ const processStanzas = (arr) => {
       // TODO: Less hacky
       lastJob.steps = getSteps(arr.slice([i]));
     } else if (checkDirective(arr[i], 'post')) {
-      ret.comments.push(['post', getSection(arr.slice([i]))]);;
+      addCommentWithDescription(ret, 'post', getSection(arr.slice([i])));
     } else if (checkDirective(arr[i], 'options')) {
-      ret.comments.push(['options', getSection(arr.slice([i]))]);;
+      addCommentWithDescription(ret, 'options', getSection(arr.slice([i])));
     } else if (checkDirective(arr[i], 'triggers')) {
-      ret.comments.push(['triggers', getSection(arr.slice([i]))]);;
+      addCommentWithDescription(ret, 'triggers', getSection(arr.slice([i])));
     } else if (checkDirective(arr[i], 'when')) {
-      ret.comments.push(['when', getSection(arr.slice([i]))]);;
+      addCommentWithDescription(ret, 'when', getSection(arr.slice([i])));
     }
   }
 
@@ -117,4 +149,4 @@ const parseJenkinsfile = (jenkinsfile) => {
   return processStanzas(jenkinsfileToArray(removeComments(jenkinsfile)));
 }
 
-module.exports = { getStageName, getSteps, getEnvironment, processStanzas, parseJenkinsfile };
+module.exports = { parseJenkinsfile };
