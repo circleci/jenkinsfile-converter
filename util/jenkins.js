@@ -36,6 +36,9 @@ const addCommentWithDescription = (circleConfig, kw, linesArr, userDict) => {
     circleConfig.comments.push(kw + ' is not recognized as a valid keyword.');
     circleConfig.comments.push(linesArr.join(' '));
   }
+  finally {
+    circleConfig.comments.push('');
+  }
 }
 
 const getStageName = (str) => {
