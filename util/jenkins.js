@@ -181,27 +181,32 @@ const processStanzas = (arr) => {
       }
     }
 
-    // Remove empty jobs
-    for (var i = jobQueue.length - 1; i >= 0; i--) {
-      if (ret.jobs[jobQueue[i]].steps.length == 0) {
-        jobQueue.splice(i, 1);
-      }
-    }
-
     ret.workflows["build-test-deploy"] = { jobs: [] };
-    jobQueue.map((jobName, index) => {
-      if (index === 0) {
-        ret.workflows["build-test-deploy"].jobs.push(jobName);
-      } else {
-        const jobWithCondition = {};
 
-        jobWithCondition[jobName] = {
-          requires: [jobQueue[index - 1]]
-        };
+    {
+      let lastJob = '';
+      jobQueue.forEach((jobName) => {
+        if (ret.jobs[jobName].steps.length === 0) {
+          delete ret.jobs[jobName];
 
-        ret.workflows["build-test-deploy"].jobs.push(jobWithCondition);
-      }
-    });
+          return;
+        }
+
+        if (ret.workflows["build-test-deploy"].jobs.length === 0) {
+          ret.workflows["build-test-deploy"].jobs.push(jobName);
+        } else {
+          const jobWithCondition = {};
+
+          jobWithCondition[jobName] = {
+            requires: [lastJob]
+          };
+
+          ret.workflows["build-test-deploy"].jobs.push(jobWithCondition);
+        }
+
+        lastJob = jobName;
+      });
+    }
   }
 
   return ret;
