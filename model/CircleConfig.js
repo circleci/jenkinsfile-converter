@@ -86,11 +86,13 @@ class CircleConfig {
     }
 
     toYAML() {
-        let yamlString = yaml.safeDump(this, { skipInvalid: true });
+        let ret = yaml.safeDump(this, { skipInvalid: true });
 
-        yamlString += `\n# ${this.comments.join('\n').replace(/\n/g, '\n# ')}`;
+        if (this.comments.length > 0) {
+            ret += `\n# ${this.comments.join('\n').trim().replace(/\n/g, '\n# ')}\n`;
+        }
 
-        return yamlString;
+        return ret;
     }
 }
 
