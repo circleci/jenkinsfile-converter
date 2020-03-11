@@ -41,7 +41,7 @@ class CircleConfig {
     parameters;
 
     /**
-     * @type { [executorName: string]: {
+     * @type {{ [executorName: string]: {
      *  environment?: { [key: string]: string },
      *  working_directory?: string,
      *  shell?: string,
@@ -49,7 +49,7 @@ class CircleConfig {
      *  docker?: CircleJobDockerContainer[],
      *  machine?: { image: string, docker_layer_caching?: boolean },
      *  macos?: { xcode: string }
-     * }}
+     * }}}
      */
     executors;
 
