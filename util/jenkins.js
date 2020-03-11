@@ -30,11 +30,11 @@ const addCommentWithDescription = (circleConfig, kw, linesArr, userDict) => {
   try {
     circleConfig.comments.push(kw + dict[kw].reason);
     circleConfig.comments.push('Please refer to ' + dict[kw].link + ' for more information.');
-    circleConfig.comments.push(linesArr.join(' '));
+    circleConfig.comments.push(linesArr.join('\n'));
   }
   catch {
     circleConfig.comments.push(kw + ' is not recognized as a valid keyword.');
-    circleConfig.comments.push(linesArr.join(' '));
+    circleConfig.comments.push(linesArr.join('\n'));
   }
   finally {
     circleConfig.comments.push('');
