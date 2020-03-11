@@ -28,12 +28,13 @@ const { parseJenkinsfile } = require('./util/jenkins.js');
     );
   }
 
-  const circleConfig = parseJenkinsfile(jenkinsfile)
-  const circleYAML = circleConfig.toYAML();
+  {
+    const circleConfig = parseJenkinsfile(jenkinsfile)
+    console.log(circleConfig);
+    const circleYAML = circleConfig.toYAML();
+    console.log(circleYAML)
 
-  fs.writeFile(path.join(__dirname, outputPath), circleYAML(), function (err) {
-    if (err) throw err;
-    console.log('file saved!')
-  });
-
+    fs.writeFileSync(path.join(__dirname, outputPath), circleYAML);
+    console.log('file saved!');
+  }
 }
