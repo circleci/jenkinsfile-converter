@@ -54,7 +54,15 @@ const getSteps = (arr) => {
   for (let i = 1; i < endIndex; i++) {
     // If the line doesn't begin with a directive, add a Step to Jobs
     if (!pullDirective(arr[i])) {
-      stepsArr.push({ run: arr[i] })
+      // https://github.com/heug/jenkinsfile-circleci/blob/dev/util/configJobs.js#L18
+      if (arr[i] !== '}' && arr[i] !== ']') {
+        // https://github.com/heug/jenkinsfile-circleci/blob/fae4632ac6ce68be037ed1499bfabc12fdd057f3/util/configJobs.js#L21
+        // Traling space is to pass through Maven options
+        if (arr[i].includes(': ')) {
+          stepsArr.push({ run: 'echo "The following command will not run successfully on CircleCI. Please review our documentation." && exit 1' })
+        }
+        stepsArr.push({ run: arr[i] });
+      }
     } else if (pullDirective(arr[i]).startsWith('script')) {
       // Handle script blocks. TODO: abstract to handle other kws https://jenkins.io/doc/pipeline/steps/
       let endScriptIndex = getBalancedIndex(arr.slice(i));
