@@ -25,7 +25,7 @@ validate_configs() {
   
   echo "${passed} tests passed out of $(( failed+passed ))"
   
-  if [ "$failed" > 0 ]
+  if [ $failed -gt 0 ]
   then
     exit 1
   fi
