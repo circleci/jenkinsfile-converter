@@ -4,8 +4,12 @@ const assert = require('chai').assert;
 const { CircleConfig } = require('../../../model/CircleConfig.js');
 
 describe('CircleConfig', () => {
-    const obj = new CircleConfig(2.1);
-    const commentString = 'My comments!';
+    let obj, commentString;
+
+    before(() => {
+        obj = new CircleConfig(2.1);
+        commentString = 'My comments!';
+    });
 
     describe('constructor', () => {
         it('should have mark version as 2.1', () => {
