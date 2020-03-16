@@ -20,9 +20,7 @@
     "url": "https://github.com/heug/jenkinsfile-circleci/issues"
   },
   "homepage": "https://github.com/heug/jenkinsfile-circleci#readme",
-  "dependencies": {
-    "js-yaml": "^3.13.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^7.0.0"

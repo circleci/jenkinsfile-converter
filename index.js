@@ -5,15 +5,20 @@
 const fs = require('fs');
 const path = require('path');
 
+const cfg = require('./util/configGen.js');
+const { createConfig } = require('./util/circleci.js');
 const { openFile, verifyValid } = require('./util/file.js');
 const { parseJenkinsfile } = require('./util/jenkins.js');
+
+
 
 // TODO: Groovy library to interact with Jenkinsfiles?
 // TODO: YAML Library to handle/validate output?
 
 // TODO: Pair Jenkinsfiles syntax key with CCI syntax key
 
-{
+function main() {
+  const config = [cfg.generateHeader(), 'version: 2.1'];
   const inputPath = process.argv[2];
   const outputPath = process.argv[3] || 'config.yml';
   const jenkinsfile = openFile(inputPath);
@@ -25,15 +30,13 @@ const { parseJenkinsfile } = require('./util/jenkins.js');
     );
   }
 
-  {
-    const circleConfig = parseJenkinsfile(jenkinsfile)
-    let circleYAML = circleConfig.toYAML();
+  const circleYAML = () => createConfig(parseJenkinsfile(jenkinsfile));
+  
+  fs.writeFile(path.join(__dirname, outputPath), circleYAML(), function(err) {
+    if (err) throw err;
+    console.log('file saved!')
+  });
 
-    // Hacking - Advisory for executors is inserted as 
-    // We remove the property definition here and put the advisory text as comments.
-    circleYAML = circleYAML.replace(/^\s*advisory_for_users: \|-\s*\n\n/m, '');
-
-    fs.writeFileSync(path.join(__dirname, outputPath), circleYAML);
-    console.log('file saved!');
-  }
 }
+
+main();
