@@ -12,7 +12,7 @@ describe('CircleWorkflowItem', () => {
 
     describe('constructor', () => {
         it('should have an empty jobs', () => {
-            expect(obj.jobs).to.be.a('array')
+            expect(obj.jobs).to.be.a('array');
             assert(obj.jobs.length === 0);
         });
     });
