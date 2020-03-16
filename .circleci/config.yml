@@ -12,7 +12,7 @@ jobs:
             - v1-npm-deps-{{ .Branch }}-{{ checksum "package-lock.json "}}
             - v1-npm-deps-{{ .Branch }}
             - v1-npm-deps
-      - run: 
+      - run:
           name: install dependencies
           command: npm i
       - save_cache:
@@ -22,16 +22,28 @@ jobs:
       - run:
           name: run unit tests
           command: npm test
-  
+
   generate-configs:
     docker:
       - image: circleci/node:12.8.0
     working_directory: ~/project
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-npm-deps-{{ .Branch }}-{{ checksum "package-lock.json "}}
+            - v1-npm-deps-{{ .Branch }}
+            - v1-npm-deps
+      - run:
+          name: install dependencies
+          command: npm i
+      - save_cache:
+          key: v1-npm-deps-{{ .branch}}-{{ checksum "package-lock.json "}}
+          paths:
+            - node_modules
       - run:
           name: create artifacts dir
-          command: mkdir -p ~/project/artifacts          
+          command: mkdir -p ~/project/artifacts
       - run:
           name: create config.yml
           command: ~/project/test/createConfigs.sh
@@ -42,7 +54,7 @@ jobs:
           paths:
             - artifacts/
             - test/validateConfigs.sh
-  
+
   output-smoke-test:
     docker:
       - image: circleci/node:12.8.0
@@ -68,4 +80,3 @@ workflows:
       - output-smoke-test:
           requires:
             - generate-configs
-
