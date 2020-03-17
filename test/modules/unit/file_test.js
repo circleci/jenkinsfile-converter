@@ -1,46 +1,17 @@
 const expect = require('chai').expect;
 const assert = require('chai').assert;
 
-const { Workflow } = require('../../../model/workflow.js');
-const { comment, 
-  padding, 
-  multilineComment, 
-  errorComment, 
-  generateHeader } = require('../../../util/configGen.js');
+const { openFile, verifyValid } = require('../../../util/file.js');
 
-describe('configGen', () => {
-  
-  describe('#comment', () => {
-    it('Creates a single line comment from a given string', () => {
-      expect(comment('This is a test comment!')).to.equal('# This is a test comment!\n');
+describe('file', () => {
+  describe('openFile', () => {
+    it('should return a string', () => {
+      expect(openFile(__filename)).to.be.a('string');
     });
   });
-
-  describe('#padding', () => {
-    it('Outputs an equal number of spaces as the given parameter', () => {
-      expect(padding('a', 12)).to.equal('            a');
+  describe('verifyValid', () => {
+    it('should pass valid config', () => {
+      expect('dummy test').to.be.a('string');
     });
-  });
-
-  describe('#multilineComment', () => {
-    it('needs tests', () => {
-      expect('foo'
-        ).to.be.a('string');
-    });
-  });
-
-  describe('#errorComment', () => {
-    it('needs tests', () => {
-      expect('foo'
-        ).to.be.a('string');
-    });
-  });
-
-  describe('#generateHeader', () => {
-    it('needs tests', () => {
-      expect('foo'
-        ).to.be.a('string');
-    });
-  });
-
+  })
 });

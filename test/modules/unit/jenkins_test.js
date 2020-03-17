@@ -1,6 +1,5 @@
 const expect = require('chai').expect;
 
-const { Workflow } = require('../../../model/workflow.js');
 const { 
   getStageName, 
   getSteps, 
