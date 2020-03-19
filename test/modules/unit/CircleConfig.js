@@ -51,6 +51,6 @@ describe('CircleConfig', () => {
 
         it('should include comment portion as comments instead', () => {
             assert(new RegExp(`^# ${commentString}`, 'm').test(yaml) === true);
-        })
+        });
     });
 });

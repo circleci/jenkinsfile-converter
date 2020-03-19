@@ -26,7 +26,7 @@ const { parseJenkinsfile } = require('./util/jenkins.js');
   }
 
   {
-    const circleConfig = parseJenkinsfile(jenkinsfile)
+    const circleConfig = parseJenkinsfile(jenkinsfile);
     let circleYAML = circleConfig.toYAML();
 
     // Hacking - Advisory for executors is inserted as 

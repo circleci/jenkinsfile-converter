@@ -27,11 +27,11 @@ const removeComments = (s) =>
 
 const jenkinsfileToArray = (s) => {
   return s.split('\n').filter(str => str.trim()).map(k => k.trim());
-}
+};
 
 // helper fn; expects arr with idx 0 that includes {, returns index of related }
 const getBalancedIndex = (arr) => {
-  let bracketCount = 0
+  let bracketCount = 0;
   // check first line has open curly brace
   if (arr[0].substr(-1,1).trim() === '{') {
     bracketCount++;
@@ -48,13 +48,13 @@ const getBalancedIndex = (arr) => {
       return i;
     }
   }
-}
+};
 
 // getSection returns a JF stanza that has balanced brackets as an array
 const getSection = (arr) => {
   return arr.slice(0, getBalancedIndex(arr) + 1);
-}
+};
 
 module.exports = { 
   pullDirective, checkDirective, isBalanced, removeComments, jenkinsfileToArray, getBalancedIndex, getSection
-}
+};
