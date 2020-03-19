@@ -2,73 +2,73 @@
  * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L5
  */
 class CircleJob {
-    /**
-     * Note: Respect
-     * https://circleci.com/docs/2.0/configuration-reference/#job_name
-     * over
-     * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L98
-     * @type {{ [key: string]: string }}
-     */
-    environment;
+  /**
+   * Note: Respect
+   * https://circleci.com/docs/2.0/configuration-reference/#job_name
+   * over
+   * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L98
+   * @type {{ [key: string]: string }}
+   */
+  environment;
 
-    /**
-     * @type {number}
-     */
-    parallelism;
+  /**
+   * @type {number}
+   */
+  parallelism;
 
-    /**
-     * @type {string}
-     */
-    working_directory;
+  /**
+   * @type {string}
+   */
+  working_directory;
 
-    /**
-     * Note: Preferring
-     * https://circleci.com/docs/2.0/configuration-reference/#job_name
-     * over
-     * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L18
-     * @type {string}
-     */
-    shell;
+  /**
+   * Note: Preferring
+   * https://circleci.com/docs/2.0/configuration-reference/#job_name
+   * over
+   * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L18
+   * @type {string}
+   */
+  shell;
 
-    /**
-     * @type {(string | { [stepCommand: string]: string | { [stepParam: string]: any } } | { type : string })[]}
-     */
-    steps;
+  /**
+   * @type {(string | { [stepCommand: string]: string | { [stepParam: string]: any } } | { type : string })[]}
+   */
+  steps;
 
-    /**
-     * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L128
-     * @type {{ xcode: string | number }}
-     */
-    macos;
+  /**
+   * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L128
+   * @type {{ xcode: string | number }}
+   */
+  macos;
 
-    /**
-     * @type {boolean | { enabled?: boolean, image: string, docker_layer_caching?: boolean }}
-     */
-    machine;
+  /**
+   * @type {boolean | { enabled?: boolean, image: string, docker_layer_caching?: boolean }}
+   */
+  machine;
 
-    /**
-     * @type {CircleJobDockerContainer[]}
-     */
-    docker;
+  /**
+   * @type {CircleJobDockerContainer[]}
+   */
+  docker;
 
-    /**
-     * @type {CircleBranchFilter}
-     */
-    branches;
+  /**
+   * @type {CircleBranchFilter}
+   */
+  branches;
 
-    /**
-     * @type {string | { [key: string]: string }}
-     */
-    executor;
+  /**
+   * @type {string | { [key: string]: string }}
+   */
+  executor;
 
-    /**
-     * @type {string}
-     */
-    resource_class;
+  /**
+   * @type {string}
+   */
+  resource_class;
 
-    constructor() {
-        this.steps = [];
-    }
+  constructor() {
+    this.steps = [];
+  }
 }
 
 module.exports = { CircleJob };

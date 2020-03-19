@@ -4,16 +4,16 @@ const assert = require('chai').assert;
 const { CircleWorkflowItem } = require('../../../model/CircleWorkflowItem.js');
 
 describe('CircleWorkflowItem', () => {
-    let obj;
+  let obj;
 
-    before(() => {
-        obj = new CircleWorkflowItem();
-    });
+  before(() => {
+    obj = new CircleWorkflowItem();
+  });
 
-    describe('constructor', () => {
-        it('should have an empty jobs', () => {
-            expect(obj.jobs).to.be.a('array');
-            assert(obj.jobs.length === 0);
-        });
+  describe('constructor', () => {
+    it('should have an empty jobs', () => {
+      expect(obj.jobs).to.be.a('array');
+      assert(obj.jobs.length === 0);
     });
+  });
 });

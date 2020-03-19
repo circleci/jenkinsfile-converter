@@ -2,56 +2,56 @@
  * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L166
  */
 class CircleJobDockerContainer {
-    /**
-     * @type {string}
-     */
-    image;
+  /**
+   * @type {string}
+   */
+  image;
 
-    /**
-     * @type {string}
-     */
-    name;
+  /**
+   * @type {string}
+   */
+  name;
 
-    /**
-     * @type {string | string[]}
-     */
-    entrypoint;
+  /**
+   * @type {string | string[]}
+   */
+  entrypoint;
 
-    /**
-     * @type {string | string[]}
-     */
-    command;
+  /**
+   * @type {string | string[]}
+   */
+  command;
 
-    /**
-     * @type {string}
-     */
-    user;
+  /**
+   * @type {string}
+   */
+  user;
 
-    /**
-     * Note: Respect
-     * https://circleci.com/docs/2.0/configuration-reference/#job_name
-     * over
-     * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L98
-     * @type {{ [key: string]: string }}
-     */
-    environment;
+  /**
+   * Note: Respect
+   * https://circleci.com/docs/2.0/configuration-reference/#job_name
+   * over
+   * https://github.com/circleci/build-agent/blob/2c97bd8862211a39e02d450cc1e797d7d2b82df5/data/config.schema.json#L98
+   * @type {{ [key: string]: string }}
+   */
+  environment;
 
-    /**
-     * @type {{ aws_access_key_id: string, aws_secret_access_key: string }}
-     */
-    aws_auth;
+  /**
+   * @type {{ aws_access_key_id: string, aws_secret_access_key: string }}
+   */
+  aws_auth;
 
-    /**
-     * @type {{ username: string, password: string }}
-     */
-    auth;
+  /**
+   * @type {{ username: string, password: string }}
+   */
+  auth;
 
-    /**
-     * @param {string} image 
-     */
-    constructor(image) {
-        this.image = image;
-    }
+  /**
+   * @param {string} image
+   */
+  constructor(image) {
+    this.image = image;
+  }
 }
 
 module.exports = { CircleJobDockerContainer };
