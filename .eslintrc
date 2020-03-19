@@ -1,0 +1,30 @@
+{
+    "env": {
+        "es6": true,
+        "browser": true,
+        "mocha": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended"
+    ],
+    "parser": "babel-eslint",
+    "rules": {
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single",
+            {
+                "avoidEscape": true,
+                "allowTemplateLiterals": true
+            }
+        ],
+        "semi": [
+            "error",
+            "always"
+        ]
+    }
+}
