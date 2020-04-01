@@ -1,6 +1,7 @@
 const fs = require('fs');
 const request = require('request');
 const openFile = (path) => fs.readFileSync(path, { encoding: 'utf8' });
+const { map } = require('./mapping/mapper.js');
 
 const inputPath = process.argv[2];
 const jenkinsin = openFile(inputPath);
@@ -15,7 +16,7 @@ request
       if (response.statusCode == 200) {
         var jenkins_json = JSON.parse(body)['data']['json'];
 
-        console.log(JSON.stringify(jenkins_json, null, 4));
+        map(jenkins_json);
       } else if (error != null) {
         console.error(error);
       }
