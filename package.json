@@ -23,7 +23,8 @@
   "homepage": "https://github.com/heug/jenkinsfile-circleci#readme",
   "dependencies": {
     "js-yaml": "^3.13.1",
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.5",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
