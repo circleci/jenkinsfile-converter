@@ -75,8 +75,16 @@ workflows:
     jobs:
       - build-and-unit-test
       - generate-configs:
+          filters:
+            branches:
+              ignore:
+                - json-conversion
           requires:
             - build-and-unit-test
       - output-smoke-test:
+          filters:
+            branches:
+              ignore:
+                - json-conversion
           requires:
             - generate-configs
