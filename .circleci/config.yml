@@ -73,7 +73,11 @@ workflows:
   version: 2
   btd:
     jobs:
-      - build-and-unit-test
+      - build-and-unit-test:
+          filters:
+            branches:
+              ignore:
+                - json-conversion
       - generate-configs:
           filters:
             branches:
