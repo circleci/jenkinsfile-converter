@@ -1,6 +1,7 @@
 class CircleStep {
   comment;
   command;
+  run;
   environment;
   working_directory;
   name;
