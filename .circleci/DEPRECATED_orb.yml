@@ -1,5 +1,6 @@
 version: 2.1
 description: |
+  DEPRECATED AS OF 4/20/20
   Open-source proof-of-concept for converting a declarative Jenkinsfile to CircleCI 2.0 config.yml. \
   This convertor is still in Alpha, and full compatability is not guaranteed. \
   config.yml is provided as an build artifact accessible via the CircleCI UI upon successful conversion. \
