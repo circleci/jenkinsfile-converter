@@ -8,25 +8,52 @@
 */
 const { CircleConfig } = require('../model/CircleConfig.js');
 const { CircleJob } = require('../model/CircleJob.js');
+const { CircleWorkflowItem } = require('../model/CircleWorkflowItem.js');
+const { CircleWorkflowJobCondition } = require('../model/CircleWorkflowJobCondition.js');
 
 const map = (arr) => {
   const config = new CircleConfig(2.1);
-
   const pipeline = arr['pipeline'];
   const stages = pipeline['stages'];
 
-  if (stages) {
+  if (!pipeline) {
+    console.log(
+      'pipeline object not found. Only declarative Jenkinsfiles are supported at this time.'
+    );
+  } else if (stages) {
     mapStages(stages, config);
+  } else {
+    console.log('No stages detected in Jenkinsfile.');
   }
 
   return config;
 };
 
 const mapStages = (stages, config) => {
-  stages.forEach((stage) => {
-    const job = new CircleJob();
-    const envVars = stage['environment'];
+  const workflow = new CircleWorkflowItem();
+  // Hard-coded workflow name--no multiple workflow support yet
+  config['workflows']['build-and-test'] = workflow;
 
+  stages.forEach((stage) => {
+    let workflowJobConditionObj = new CircleWorkflowJobCondition();
+
+    // TODO: fix first job in WF to not show `: {}`
+    if (workflow.jobs.length > 0) {
+      let precedingJobName = Object.keys(workflow.jobs[workflow.jobs.length - 1]);
+      workflowJobConditionObj['requires'] = precedingJobName;
+    }
+    if (!stage.parallel) {
+      let workflowJobName = stage.name;
+      workflow.jobs.push({ [workflowJobName]: workflowJobConditionObj });
+    } else {
+      stage.parallel.forEach((parallelStage) => {
+        let workflowJobName = parallelStage.name;
+        workflow.jobs.push({ [workflowJobName]: workflowJobConditionObj });
+      });
+    }
+
+    let job = new CircleJob();
+    let envVars = stage['environment'];
     if (envVars) {
       job.environment = {};
 
@@ -43,9 +70,8 @@ const mapStages = (stages, config) => {
         job.environment[key] = value;
       });
     }
-
     config['jobs'][stage.name] = job;
   });
 };
 
-module.exports = { map };
+module.exports = { map, mapStages };

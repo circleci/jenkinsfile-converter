@@ -86,7 +86,7 @@ class CircleConfig {
   }
 
   toYAML() {
-    let ret = yaml.safeDump(this, { skipInvalid: true, lineWidth: 512 });
+    let ret = yaml.safeDump(this, { skipInvalid: true, lineWidth: 512, noRefs: true });
 
     if (this.comments.length > 0) {
       ret += `\n# ${this.comments
