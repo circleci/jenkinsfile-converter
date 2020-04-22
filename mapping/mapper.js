@@ -10,6 +10,7 @@ const { CircleConfig } = require('../model/CircleConfig.js');
 const { CircleJob } = require('../model/CircleJob.js');
 const { CircleWorkflowItem } = require('../model/CircleWorkflowItem.js');
 const { CircleWorkflowJobCondition } = require('../model/CircleWorkflowJobCondition.js');
+const { fnPerVerb } = require('./mapper_steps.js');
 
 const map = (arr) => {
   const config = new CircleConfig(2.1);
@@ -36,6 +37,8 @@ const mapStages = (stages, config) => {
 
   stages.forEach((stage) => {
     let workflowJobConditionObj = new CircleWorkflowJobCondition();
+    let job = new CircleJob();
+    let envVars = stage['environment'];
 
     // TODO: fix first job in WF to not show `: {}`
     if (workflow.jobs.length > 0) {
@@ -45,32 +48,32 @@ const mapStages = (stages, config) => {
     if (!stage.parallel) {
       let workflowJobName = stage.name;
       workflow.jobs.push({ [workflowJobName]: workflowJobConditionObj });
+
+      job.steps = fnPerVerb(stage.branches[0].steps);
+      config['jobs'][workflowJobName] = job;
     } else {
       stage.parallel.forEach((parallelStage) => {
         let workflowJobName = parallelStage.name;
         workflow.jobs.push({ [workflowJobName]: workflowJobConditionObj });
+
+        job.steps = fnPerVerb(parallelStage.branches[0].steps);
+        config['jobs'][workflowJobName] = job;
       });
     }
 
-    let job = new CircleJob();
-    let envVars = stage['environment'];
     if (envVars) {
-      job.environment = {};
-
       envVars.forEach((envVar) => {
-        const key = envVar['key'];
-        var value = envVar['value'];
+        let key = envVar['key'];
+        let value = envVar['value'];
 
         if (typeof value == 'object') {
           // TODO: Here we would handle things such as 'credentials(xxxx)', for now just using the value itself.
           // Currently grabbing the first argument from credentials(), need to check to see if there are possibly more to pass.
           value = value['arguments'][0]['value'];
         }
-
         job.environment[key] = value;
       });
     }
-    config['jobs'][stage.name] = job;
   });
 };
 
