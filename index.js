@@ -58,13 +58,19 @@ const { map } = require('./mapping/mapper.js');
     // TODO: Avoid nesting try-catch
     try {
       const inputPath = process.argv[2];
+      const outputPath = process.argv[3];
       const jenkinsJSON = await groovyToJSONPromise(fs.readFileSync(inputPath, 'utf8'));
 
       try {
         const jenkinsObj = JSON.parse(jenkinsJSON).data.json;
         const circleConfig = map(jenkinsObj);
+        const configYml = circleConfig.toYAML();
 
-        console.log(circleConfig.toYAML());
+        console.log(configYml);
+
+        if (typeof outputPath === typeof '') {
+          fs.writeFileSync(outputPath, configYml);
+        }
       } catch (err) {
         console.error(err);
         console.error('Error in conversion');
