@@ -42,12 +42,12 @@ describe('convertJenkinsfileToConfigYml', () => {
 
     test('header', () => {
         expect(res.setHeader.mock.calls[0][0]).toBe('Content-Type');
-        expect(res.setHeader.mock.calls[0][1]).toBe('text/yaml');
+        expect(res.setHeader.mock.calls[0][1]).toBe('text/x-yaml');
     });
 
     test('body', async () => {
         expect(res.end.mock.calls[0][0]).toBe(resBody);
     });
 
-    // TODO: Test toJSON wich mocking https library
+    // TODO: Test methods wich require mock of https library
 });

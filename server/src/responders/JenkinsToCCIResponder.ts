@@ -22,7 +22,7 @@ class JenkinsToCCIResponder {
         req: express.Request,
         res: express.Response
     ) {
-        res.setHeader('Content-Type', 'text/yaml');
+        res.setHeader('Content-Type', 'text/x-yaml');
         res.end(await jfcModule.jenkinsToCCI(querystring.unescape(req.body)));
     }
 
