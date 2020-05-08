@@ -74,7 +74,7 @@ jobs:
 
   clean-build-for-docker-image:
     docker:
-      - image: cimg/node:stable
+      - image: cimg/node:14.2
     steps:
       - checkout
       - run:
