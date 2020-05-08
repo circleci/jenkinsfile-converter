@@ -106,7 +106,7 @@ jobs:
           command: cp dist/jfc-module.js server/assets
       - restore_cache:
           keys:
-            - server-yarn-deps-{{ checksum "yarn.lock" }}
+            - server-yarn-deps-{{ checksum "server/yarn.lock" }}
             - server-yarn-deps
       - run:
           name: yarn install (for server)
@@ -115,7 +115,7 @@ jobs:
       - save_cache:
           paths:
             - server/node_modules
-          key: yarn-deps-{{ checksum "yarn.lock" }}-{{ epoch }}
+          key: yarn-deps-{{ checksum "server/yarn.lock" }}-{{ epoch }}
       - run:
           name: Production build for server
           command: |
