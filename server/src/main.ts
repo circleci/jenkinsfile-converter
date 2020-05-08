@@ -22,21 +22,23 @@ class MainApp {
             '/',
             VersionNumberResponder.getVersion
         );
+
         this.expWrapper.armEndpoint(
             'POST',
-            '/to-config-yml',
+            '/i/to-config-yml',
             JenkinsToCCIResponder.convertJenkinsfileToConfigYml
         );
         this.expWrapper.armEndpoint(
             'POST',
-            '/to-json',
+            '/i/to-json',
             JenkinsToCCIResponder.convertJenkinsfileToJSON
         );
 
-        // TODO: Remove the hook below after certain period - this is just for backward compatibility
         this.expWrapper.armEndpoint(
             'POST',
-            '/',
+            '/i',
+            // TODO: Replace convertJenkinsfileToJSON with convertJenkinsfileToConfigYml
+            // It is there only for backward compatibility
             JenkinsToCCIResponder.convertJenkinsfileToJSON
         );
     }
