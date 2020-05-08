@@ -33,7 +33,7 @@ class JenkinsToCCIResponder {
         res.end(
             await JenkinsToCCIResponder.groovyToJSONPromise(
                 querystring.unescape(req.body)
-            )
+            ).catch((err) => console.error(err))
         );
     }
 
