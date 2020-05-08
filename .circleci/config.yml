@@ -115,7 +115,7 @@ jobs:
       - save_cache:
           paths:
             - server/node_modules
-          key: yarn-deps-{{ checksum "server/yarn.lock" }}-{{ epoch }}
+          key: server-yarn-deps-{{ checksum "server/yarn.lock" }}-{{ epoch }}
       - run:
           name: Production build for server
           command: |
