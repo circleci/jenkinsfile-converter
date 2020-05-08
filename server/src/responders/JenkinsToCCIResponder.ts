@@ -1,5 +1,7 @@
+import * as http from 'http';
 import * as https from 'https';
 import * as querystring from 'querystring';
+import * as url from 'url';
 
 import * as jfcModule from '../../assets/jfc-module.js';
 
@@ -53,7 +55,11 @@ class JenkinsToCCIResponder {
     ): void {
         try {
             const bodyData = querystring.stringify({ jenkinsfile: groovyStr });
-            const req = https.request(
+            const req = (url.parse(JenkinsToCCIResponder.jenkinsTarget)
+                .protocol === 'https:'
+                ? https
+                : http
+            ).request(
                 JenkinsToCCIResponder.jenkinsTarget,
                 {
                     method: 'POST',

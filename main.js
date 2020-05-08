@@ -1,3 +1,4 @@
+const http = require('http');
 const https = require('https');
 const querystring = require('querystring');
 
@@ -5,7 +6,7 @@ const { map } = require('./mapping/mapper.js');
 
 const jenkinsTarget = (typeof __JENKINS_TARGET === typeof '' && __JENKINS_TARGET !== '') ? __JENKINS_TARGET : 'https://jenkinsto.cc/i';
 
-const groovyToJSONHTTPSCB = (resolve, reject, res) => {
+const groovyToJSONHTTPCB = (resolve, reject, res) => {
   const dataChunks = [];
 
   res.on('data', (data) => {
@@ -30,7 +31,7 @@ const groovyToJSONHTTPSCB = (resolve, reject, res) => {
 const groovyToJSONRunner = (groovyStr, resolve, reject) => {
   try {
     const bodyData = querystring.stringify({ jenkinsfile: groovyStr });
-    const req = https.request(
+    const req = (url.parse(JenkinsToCCIResponder.jenkinsTarget).protocol === 'https:' ? https : http).request(
       jenkinsTarget,
       {
         method: 'POST',
@@ -39,7 +40,7 @@ const groovyToJSONRunner = (groovyStr, resolve, reject) => {
           'Content-Length': bodyData.length
         }
       },
-      groovyToJSONHTTPSCB.bind(null, resolve, reject)
+      groovyToJSONHTTPCB.bind(null, resolve, reject)
     );
 
     req.write(bodyData);
