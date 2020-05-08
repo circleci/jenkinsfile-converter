@@ -120,6 +120,8 @@ jobs:
           command: |
             export __BUILD_VERSION="$(cat version.txt)"
             yarn build
+          environment:
+            __JENKINS_TARGET: "http://jenkins.jfc-containers.local:8080/pipeline-model-converter/toJson"
           working_directory: server
       - store_artifacts:
           path: server/dist/server.js
