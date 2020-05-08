@@ -37,7 +37,7 @@ class MainApp {
         this.expWrapper.armEndpoint(
             'POST',
             '/',
-            JenkinsToCCIResponder.convertJenkinsfileToConfigYml
+            JenkinsToCCIResponder.convertJenkinsfileToJSON
         );
     }
 }
