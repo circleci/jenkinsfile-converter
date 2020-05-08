@@ -1,6 +1,5 @@
 import * as http from 'http';
 import * as https from 'https';
-import * as querystring from 'querystring';
 import * as url from 'url';
 
 import * as jfcModule from '../../assets/jfc-module.js';
@@ -23,7 +22,11 @@ class JenkinsToCCIResponder {
         res: express.Response
     ) {
         res.setHeader('Content-Type', 'text/x-yaml');
-        res.end(await jfcModule.jenkinsToCCI(querystring.unescape(req.body)));
+        res.end(
+            await jfcModule
+                .jenkinsToCCI(req.body.toString('utf-8'))
+                .catch((err) => console.error(err))
+        );
     }
 
     public static async convertJenkinsfileToJSON(
@@ -34,27 +37,26 @@ class JenkinsToCCIResponder {
         res.setHeader('Content-Type', 'application/json');
         res.end(
             await JenkinsToCCIResponder.groovyToJSONPromise(
-                querystring.unescape(req.body)
+                req.body
             ).catch((err) => console.error(err))
         );
     }
 
-    private static groovyToJSONPromise(groovyStr: string): Promise<string> {
+    private static groovyToJSONPromise(bodyData: Buffer): Promise<string> {
         return new Promise(
             JenkinsToCCIResponder.groovyToJSONRunner.bind(
                 JenkinsToCCIResponder,
-                groovyStr
+                bodyData
             )
         );
     }
 
     private static groovyToJSONRunner(
-        groovyStr: string,
+        bodyData: Buffer,
         resolve: (res: string) => void,
         reject: (err: Error) => void
     ): void {
         try {
-            const bodyData = querystring.stringify({ jenkinsfile: groovyStr });
             const req = (url.parse(JenkinsToCCIResponder.jenkinsTarget)
                 .protocol === 'https:'
                 ? https

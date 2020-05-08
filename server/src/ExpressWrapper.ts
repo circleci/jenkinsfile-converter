@@ -15,7 +15,7 @@ class ExpressWrapper {
     private httpServers: http.Server[] = [];
 
     constructor() {
-        this.app.use(bodyParser.text({ type: '*/*' }));
+        this.app.use(bodyParser.raw({ type: '*/*' }));
         this.app.use((req, res, next) =>
             this.setVersionInHeader(req, res, next)
         );
