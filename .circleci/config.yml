@@ -116,6 +116,9 @@ jobs:
           working_directory: server
       - store_artifacts:
           path: server/dist/server.js
+      - run:
+          name: Test server
+          command: yarn test
       - setup_remote_docker:
           docker_layer_caching: false
       - docker/check:
@@ -153,4 +156,5 @@ workflows:
                 - json-conversion
           requires:
             - generate-configs
-      - clean-build-for-docker-image
+      - clean-build-for-docker-image:
+          context: docker-hub
