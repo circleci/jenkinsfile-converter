@@ -7,7 +7,7 @@ declare const __BUILD_VERSION: string;
 
 class ExpressWrapper {
     private readonly listenAddrs = ['::'];
-    private readonly listenPort = 58888;
+    private readonly listenPort = 28080;
 
     public services = {};
 
