@@ -103,7 +103,7 @@ jobs:
           path: dist/jfc-module.js
       - run:
           name: Copy the webpacked module for server
-          command: cp dist/jfc-module.js -t server/assets
+          command: cp dist/jfc-module.js server/assets
       - restore_cache:
           keys:
             - server-yarn-deps-{{ checksum "yarn.lock" }}
