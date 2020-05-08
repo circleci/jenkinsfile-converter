@@ -3,6 +3,8 @@ const querystring = require('querystring');
 
 const { map } = require('./mapping/mapper.js');
 
+const jenkinsTarget = (typeof __JENKINS_TARGET === typeof '' && __JENKINS_TARGET !== '') ? __JENKINS_TARGET : 'https://jenkinsto.cc/i';
+
 const groovyToJSONHTTPSCB = (resolve, reject, res) => {
   const dataChunks = [];
 
@@ -29,7 +31,7 @@ const groovyToJSONRunner = (groovyStr, resolve, reject) => {
   try {
     const bodyData = querystring.stringify({ jenkinsfile: groovyStr });
     const req = https.request(
-      'https://jenkinsto.cc/i',
+      jenkinsTarget,
       {
         method: 'POST',
         headers: {
