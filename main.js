@@ -1,6 +1,7 @@
 const http = require('http');
 const https = require('https');
 const querystring = require('querystring');
+const url = require('url');
 
 const { map } = require('./mapping/mapper.js');
 
