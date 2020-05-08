@@ -2,14 +2,14 @@ import { JenkinsToCCIResponder } from './JenkinsToCCIResponder';
 
 import type * as express from 'express';
 
-const groovyStr = 'groovy';
-const yamlStr = 'response: yaml';
+const reqBody = 'groovy';
+const resBody = 'response: yaml';
 
 const mockReq = {
-    body: groovyStr
+    body: reqBody
 };
 
-const mockJenkinsToCCI = jest.fn().mockResolvedValue(yamlStr);
+const mockJenkinsToCCI = jest.fn().mockResolvedValue(resBody);
 
 const mockRes = () => {
     return {
@@ -37,7 +37,7 @@ describe('convertJenkinsfileToConfigYml', () => {
     });
 
     test('jenkinsToCCI', () => {
-        expect(mockJenkinsToCCI.mock.calls[0][0]).toBe('groovy');
+        expect(mockJenkinsToCCI.mock.calls[0][0]).toBe(reqBody);
     });
 
     test('header', () => {
@@ -46,6 +46,8 @@ describe('convertJenkinsfileToConfigYml', () => {
     });
 
     test('body', async () => {
-        expect(res.end.mock.calls[0][0]).toBe('response: yaml');
+        expect(res.end.mock.calls[0][0]).toBe(resBody);
     });
+
+    // TODO: Test toJSON wich mocking https library
 });

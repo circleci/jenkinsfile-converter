@@ -94,6 +94,10 @@ jobs:
       - run:
           name: webpack base module
           command: npm run build
+          environment:
+            __JENKINS_TARGET: 'http://jenkins.jfc-containers.local:8080/pipeline-model-converter/toJson'
+      - store_artifacts:
+          path: dist/jfc-module.js
       - run:
           name: Copy the webpacked module for server
           command: cp dist/jfc-module.js -t server/assets

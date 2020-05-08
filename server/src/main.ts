@@ -24,8 +24,13 @@ class MainApp {
         );
         this.expWrapper.armEndpoint(
             'POST',
-            '/convert',
+            '/to-config-yml',
             JenkinsToCCIResponder.convertJenkinsfileToConfigYml
+        );
+        this.expWrapper.armEndpoint(
+            'POST',
+            '/to-json',
+            JenkinsToCCIResponder.convertJenkinsfileToJSON
         );
     }
 }
