@@ -32,7 +32,7 @@ const groovyToJSONHTTPCB = (resolve, reject, res) => {
 const groovyToJSONRunner = (groovyStr, resolve, reject) => {
   try {
     const bodyData = querystring.stringify({ jenkinsfile: groovyStr });
-    const req = (url.parse(JenkinsToCCIResponder.jenkinsTarget).protocol === 'https:' ? https : http).request(
+    const req = (url.parse(jenkinsTarget).protocol === 'https:' ? https : http).request(
       jenkinsTarget,
       {
         method: 'POST',
