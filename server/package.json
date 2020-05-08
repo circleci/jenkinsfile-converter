@@ -1,5 +1,5 @@
 {
-    "name": "serial-number-server",
+    "name": "jfc-server",
     "version": "0.0.202004290956",
     "scripts": {
         "build": "webpack --mode production",

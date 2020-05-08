@@ -32,6 +32,13 @@ class MainApp {
             '/to-json',
             JenkinsToCCIResponder.convertJenkinsfileToJSON
         );
+
+        // TODO: Remove the hook below after certain period - this is just for backward compatibility
+        this.expWrapper.armEndpoint(
+            'POST',
+            '/',
+            JenkinsToCCIResponder.convertJenkinsfileToConfigYml
+        );
     }
 }
 

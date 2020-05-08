@@ -126,6 +126,7 @@ jobs:
       - run:
           name: Test server
           command: yarn test
+          working_directory: server
       - persist_to_workspace:
           root: server
           paths:
