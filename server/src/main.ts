@@ -23,11 +23,18 @@ class MainApp {
             VersionNumberResponder.getVersion
         );
 
+        // /i/do is a shorthand
+        this.expWrapper.armEndpoint(
+            'POST',
+            '/i/do',
+            JenkinsToCCIResponder.convertJenkinsfileToConfigYml
+        );
         this.expWrapper.armEndpoint(
             'POST',
             '/i/to-config-yml',
             JenkinsToCCIResponder.convertJenkinsfileToConfigYml
         );
+
         this.expWrapper.armEndpoint(
             'POST',
             '/i/to-json',
