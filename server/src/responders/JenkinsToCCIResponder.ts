@@ -1,6 +1,4 @@
-import * as http from 'http';
-import * as https from 'https';
-import * as url from 'url';
+import * as axios from 'axios';
 import * as util from 'util';
 
 import * as jfcModule from '../../assets/jfc-module.js';
@@ -32,84 +30,24 @@ class JenkinsToCCIResponder {
         req: express.Request,
         res: express.Response
     ): Promise<void> {
-        res.setHeader('Content-Type', 'application/json');
+        res.set('Content-Type', 'application/json');
 
-        return JenkinsToCCIResponder.groovyToJSONPromise(req.body)
+        return axios.default
+            .post(
+                typeof __JENKINS_TARGET === typeof '' && __JENKINS_TARGET !== ''
+                    ? __JENKINS_TARGET
+                    : 'https://jenkinsto.cc/i/to-json',
+                req.body.toString('utf-8'),
+                {
+                    transformResponse: (res) => res
+                }
+            )
             .then((ret) => {
-                res.status(200).end(ret);
+                res.status(200).end(ret.data);
             })
             .catch((error) => {
                 JenkinsToCCIResponder.returnErrorMessage(req, res, error);
             });
-    }
-
-    private static groovyToJSONPromise(bodyData: Buffer): Promise<string> {
-        return new Promise(
-            JenkinsToCCIResponder.groovyToJSONRunner.bind(
-                JenkinsToCCIResponder,
-                bodyData
-            )
-        );
-    }
-
-    private static groovyToJSONRunner(
-        bodyData: Buffer,
-        resolve: (res: string) => void,
-        reject: (err: Error) => void
-    ): void {
-        try {
-            const jenkinsTarget =
-                typeof __JENKINS_TARGET === typeof '' && __JENKINS_TARGET !== ''
-                    ? __JENKINS_TARGET
-                    : 'https://jenkinsto.cc/i/to-json';
-            const req = (url.parse(jenkinsTarget).protocol === 'https:'
-                ? https
-                : http
-            ).request(
-                jenkinsTarget,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Content-Length': bodyData.length
-                    }
-                },
-                JenkinsToCCIResponder.groovyToJSONCB.bind(this, resolve, reject)
-            );
-
-            req.write(bodyData);
-            req.end();
-
-            throw null;
-        } catch (err) {
-            reject(err);
-        }
-    }
-
-    private static groovyToJSONCB(
-        resolve: (res: string) => void,
-        reject: (err: Error | string) => void,
-        res: express.Response
-    ): void {
-        const dataChunks = [];
-
-        res.on('data', (data) => {
-            dataChunks.push(data);
-        });
-
-        res.on('end', () => {
-            const resBodyStr = Buffer.concat(dataChunks).toString();
-
-            if (res.statusCode === 200) {
-                resolve(resBodyStr);
-            } else {
-                reject(resBodyStr);
-            }
-        });
-
-        res.on('error', (err) => {
-            reject(err);
-        });
     }
 
     private static returnErrorMessage(

@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/heug/jenkinsfile-circleci#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "js-yaml": "^3.13.1"
   },
   "devDependencies": {
