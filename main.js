@@ -2,6 +2,7 @@ const http = require('http');
 const https = require('https');
 const querystring = require('querystring');
 const url = require('url');
+const util = require('util');
 
 const { map } = require('./mapping/mapper.js');
 
@@ -55,26 +56,24 @@ const groovyToJSONPromise = (groovyStr) => {
   return new Promise(groovyToJSONRunner.bind(null, groovyStr));
 };
 
+const formatErrorDetails = (err) => {
+  return `  ${util.format(err).replace(/\n/g, '\n  ')}`;
+};
+
 // Main from here
 const jenkinsToCCI = async (jenkinsfile) => {
-  // TODO: Avoid nesting try-catch
+  const jenkinsJSON = await groovyToJSONPromise(jenkinsfile.toString('utf-8')).catch((err) => {
+    throw (new Error(`Error in Jenkins. Details:\n${formatErrorDetails(err)}`));
+  });
+
   try {
-    // fs.readFileSync(inputPath, 'utf8')
-    const jenkinsJSON = await groovyToJSONPromise(jenkinsfile);
+    const jenkinsObj = JSON.parse(jenkinsJSON).data.json;
+    const circleConfig = map(jenkinsObj);
+    const configYml = circleConfig.toYAML();
 
-    try {
-      const jenkinsObj = JSON.parse(jenkinsJSON).data.json;
-      const circleConfig = map(jenkinsObj);
-      const configYml = circleConfig.toYAML();
-
-      return configYml;
-    } catch (err) {
-      console.error(err);
-      console.error('Error in conversion');
-    }
+    return configYml;
   } catch (err) {
-    console.error(err);
-    console.error('Error in Jenkins');
+    throw (new Error(`Error in mapping. Details:\n${formatErrorDetails(err)}`));
   }
 };
 
