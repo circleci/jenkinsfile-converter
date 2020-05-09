@@ -13,7 +13,8 @@ const mockJenkinsToCCI = jest.fn().mockResolvedValue(resBody);
 
 const mockRes = () => {
     return {
-        setHeader: jest.fn().mockReturnThis(),
+        status: jest.fn().mockReturnThis(),
+        set: jest.fn().mockReturnThis(),
         end: jest.fn().mockReturnThis()
     };
 };
@@ -41,8 +42,9 @@ describe('convertJenkinsfileToConfigYml', () => {
     });
 
     test('header', () => {
-        expect(res.setHeader.mock.calls[0][0]).toBe('Content-Type');
-        expect(res.setHeader.mock.calls[0][1]).toBe('text/x-yaml');
+        expect(res.status.mock.calls[0][0]).toBe(200);
+        expect(res.set.mock.calls[0][0]).toBe('Content-Type');
+        expect(res.set.mock.calls[0][1]).toBe('text/x-yaml');
     });
 
     test('body', async () => {

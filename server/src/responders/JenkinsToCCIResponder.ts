@@ -16,8 +16,8 @@ class JenkinsToCCIResponder {
         services: ExpressWrapper['services'],
         req: express.Request,
         res: express.Response
-    ) {
-        jfcModule
+    ): Promise<void> {
+        return jfcModule
             .jenkinsToCCI(req.body)
             .then((ret) => {
                 res.status(200).set('Content-Type', 'text/x-yaml').end(ret);
@@ -31,9 +31,10 @@ class JenkinsToCCIResponder {
         services: ExpressWrapper['services'],
         req: express.Request,
         res: express.Response
-    ) {
+    ): Promise<void> {
         res.setHeader('Content-Type', 'application/json');
-        JenkinsToCCIResponder.groovyToJSONPromise(req.body)
+
+        return JenkinsToCCIResponder.groovyToJSONPromise(req.body)
             .then((ret) => {
                 res.status(200).end(ret);
             })
