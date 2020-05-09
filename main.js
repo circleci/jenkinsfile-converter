@@ -5,7 +5,7 @@ const url = require('url');
 
 const { map } = require('./mapping/mapper.js');
 
-const jenkinsTarget = (typeof __JENKINS_TARGET === typeof '' && __JENKINS_TARGET !== '') ? __JENKINS_TARGET : 'https://jenkinsto.cc/i';
+const jenkinsTarget = (typeof __JENKINS_TARGET === typeof '' && __JENKINS_TARGET !== '') ? __JENKINS_TARGET : 'https://jenkinsto.cc/i/to-json';
 
 const groovyToJSONHTTPCB = (resolve, reject, res) => {
   const dataChunks = [];

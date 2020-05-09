@@ -11,10 +11,7 @@ import type { ExpressWrapper } from '../ExpressWrapper';
 declare const __JENKINS_TARGET: string;
 
 class JenkinsToCCIResponder {
-    private static readonly jenkinsTarget =
-        typeof __JENKINS_TARGET === typeof '' && __JENKINS_TARGET !== ''
-            ? __JENKINS_TARGET
-            : 'https://jenkinsto.cc/i';
+    private static readonly;
 
     public static async convertJenkinsfileToConfigYml(
         services: ExpressWrapper['services'],
@@ -57,12 +54,15 @@ class JenkinsToCCIResponder {
         reject: (err: Error) => void
     ): void {
         try {
-            const req = (url.parse(JenkinsToCCIResponder.jenkinsTarget)
-                .protocol === 'https:'
+            const jenkinsTarget =
+                typeof __JENKINS_TARGET === typeof '' && __JENKINS_TARGET !== ''
+                    ? __JENKINS_TARGET
+                    : 'https://jenkinsto.cc/i/to-json';
+            const req = (url.parse(jenkinsTarget).protocol === 'https:'
                 ? https
                 : http
             ).request(
-                JenkinsToCCIResponder.jenkinsTarget,
+                jenkinsTarget,
                 {
                     method: 'POST',
                     headers: {
