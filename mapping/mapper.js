@@ -6,6 +6,7 @@
         Track which children were not properly translated
     
 */
+
 const { CircleConfig } = require('../model/CircleConfig.js');
 const { CircleJob } = require('../model/CircleJob.js');
 const { CircleWorkflowItem } = require('../model/CircleWorkflowItem.js');
@@ -36,25 +37,38 @@ const mapStages = (stages, config) => {
   config['workflows']['build-and-test'] = workflow;
 
   stages.forEach((stage) => {
-    let workflowJobConditionObj = new CircleWorkflowJobCondition();
+    const workflowJobConditionObj = new CircleWorkflowJobCondition();
     let job = new CircleJob();
     let envVars = stage['environment'];
 
-    // TODO: fix first job in WF to not show `: {}`
     if (workflow.jobs.length > 0) {
-      let precedingJobName = Object.keys(workflow.jobs[workflow.jobs.length - 1]);
+      let precedingJobName;
+      if (workflow.jobs.length === 1) {
+        precedingJobName = workflow.jobs[workflow.jobs.length - 1];
+      } else {
+        precedingJobName = Object.keys(workflow.jobs[workflow.jobs.length - 1]);
+      }
       workflowJobConditionObj['requires'] = precedingJobName;
     }
+
     if (!stage.parallel) {
       let workflowJobName = stage.name;
-      workflow.jobs.push({ [workflowJobName]: workflowJobConditionObj });
+      if (workflowJobConditionObj.requires === undefined) {
+        workflow.jobs.push(workflowJobName);
+      } else {
+        workflow.jobs.push({ [workflowJobName]: workflowJobConditionObj });
+      }
 
       job.steps = fnPerVerb(stage.branches[0].steps);
       config['jobs'][workflowJobName] = job;
     } else {
       stage.parallel.forEach((parallelStage) => {
         let workflowJobName = parallelStage.name;
-        workflow.jobs.push({ [workflowJobName]: workflowJobConditionObj });
+        if (workflowJobConditionObj.requires === undefined) {
+          workflow.jobs.push(workflowJobName);
+        } else {
+          workflow.jobs.push({ [workflowJobName]: workflowJobConditionObj });
+        }
 
         job.steps = fnPerVerb(parallelStage.branches[0].steps);
         config['jobs'][workflowJobName] = job;
