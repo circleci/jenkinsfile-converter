@@ -1,5 +1,3 @@
-const { CircleStep } = require('../model/CircleStep.js');
-
 const isLiteral = (step) => {
   if (
     Object.prototype.hasOwnProperty.call(step[`arguments`][0][`value`], `isLiteral`) &&
@@ -16,9 +14,11 @@ const fnPerVerb = (stepsArr) => {
   stepsArr.map((step) => {
     if (!isLiteral(step)) {
       let stepObject = {};
-      stepObject.comment =
-        'Translation of non-literal commands are not currently supported by this tool\n';
-      stepObject.comment += step.name + ' ' + step.arguments[0].value.value;
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] =
+        'Translation of non-literal commands are not supported by the JFC';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`STACK_TRACE`] = step.name + ' ' + step[`arguments`][0][`value`][`value`];
       steps.push(stepObject);
     } else {
       let output = directiveToCommand(step);
@@ -33,13 +33,15 @@ const fnPerVerb = (stepsArr) => {
 };
 
 const directiveToCommand = (step) => {
-  let stepObject = new CircleStep();
+  let stepObject = {};
 
   const directives = {
     sh: () => {
       // {"sh":  "Shell command"}
       if (!step[`arguments`][0][`value`][`isLiteral`]) {
-        stepObject[`comment`] =
+        stepObject[`run`] = {};
+        stepObject[`run`][`command`] = 'exit 1';
+        stepObject[`run`][`name`] =
           'Translation of non-literal commands are not currently supported by this tool';
       } else {
         stepObject[`run`] = step[`arguments`][0][`value`][`value`];
@@ -59,8 +61,11 @@ const directiveToCommand = (step) => {
     catchError: () => {
       // {"catchError": "Catch error and set build result to failure"}
       // Consider `when` step
-      stepObject[`comment`] =
-        'catchError is not currently supported. Please refer to the `when` documentation for advice on usage \
+      stepObject[`run`] = {};
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`name`] = 'catchError is not currently supported.';
+      stepObject[`run`][`STACK_TRACE`] =
+        'Please refer to the `when` documentation for advice on usage \
                 https://circleci.com/docs/2.0/configuration-reference/#the-when-step-requires-version-21\n \
                 https://support.circleci.com/hc/en-us/articles/360043188514-How-to-Retry-a-Failed-Step-with-when-Attribute-';
       return stepObject;
@@ -95,8 +100,10 @@ const directiveToCommand = (step) => {
     // {"unarchive":  "Copy archived artifacts into the workspace"}
     // {"withContext":  "Use contextual object from inte"}
     default: () => {
-      stepObject.comment = 'Unsupported keyword.\n';
-      stepObject.comment += step.name + ' ' + step.arguments[0].value.value;
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Unsupported keyword.\n';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`STACK_TRACE`] += step.name + ' ' + step.arguments[0].value.value;
       return stepObject;
     }
   };

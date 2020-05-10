@@ -52,7 +52,7 @@ const mapStages = (stages, config) => {
     }
 
     if (!stage.parallel) {
-      let workflowJobName = stage.name;
+      let workflowJobName = stage.name.replace(/ /g, '-');
       if (workflowJobConditionObj.requires === undefined) {
         workflow.jobs.push(workflowJobName);
       } else {
@@ -63,7 +63,7 @@ const mapStages = (stages, config) => {
       config['jobs'][workflowJobName] = job;
     } else {
       stage.parallel.forEach((parallelStage) => {
-        let workflowJobName = parallelStage.name;
+        let workflowJobName = parallelStage.name.replace(/ /g, '-');
         if (workflowJobConditionObj.requires === undefined) {
           workflow.jobs.push(workflowJobName);
         } else {
