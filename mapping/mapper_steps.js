@@ -12,21 +12,11 @@ const isLiteral = (step) => {
 const fnPerVerb = (stepsArr) => {
   let steps = [];
   stepsArr.map((step) => {
-    if (!isLiteral(step)) {
-      let stepObject = {};
-      stepObject[`run`] = {};
-      stepObject[`run`][`name`] =
-        'Translation of non-literal commands are not supported by the JFC';
-      stepObject[`run`][`command`] = 'exit 1';
-      stepObject[`run`][`STACK_TRACE`] = step.name + ' ' + step[`arguments`][0][`value`][`value`];
-      steps.push(stepObject);
+    let output = directiveToCommand(step);
+    if (!Array.isArray(output)) {
+      steps.push(output);
     } else {
-      let output = directiveToCommand(step);
-      if (!Array.isArray(output)) {
-        steps.push(output);
-      } else {
-        output.map((stepObject) => steps.push(stepObject));
-      }
+      output.map((stepObject) => steps.push(stepObject));
     }
   });
   return steps;
@@ -36,13 +26,26 @@ const directiveToCommand = (step) => {
   let stepObject = {};
 
   const directives = {
+    script: () => {
+      // {"sh":  "Run arbitrary Java"}
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'script is not currently supported.';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`STACK_TRACE`] = step.name + ' ' + step[`arguments`][0][`value`][`value`];
+      return stepObject;
+    },
     sh: () => {
       // {"sh":  "Shell command"}
-      if (!step[`arguments`][0][`value`][`isLiteral`]) {
+      if (!isLiteral(step)) {
         stepObject[`run`] = {};
+        stepObject[`run`][`name`] = 'Confirm environment variables are set before running';
         stepObject[`run`][`command`] = 'exit 1';
-        stepObject[`run`][`name`] =
-          'Translation of non-literal commands are not currently supported by this tool';
+        stepObject[`run`][`STACK_TRACE`] =
+          'Please refer to environment variable documentation for more information' +
+          '\nhttps://circleci.com/docs/2.0/env-vars/\n' +
+          step.name +
+          ' ' +
+          step[`arguments`][0][`value`][`value`];
       } else {
         stepObject[`run`] = step[`arguments`][0][`value`][`value`];
       }
@@ -62,9 +65,12 @@ const directiveToCommand = (step) => {
       // {"catchError": "Catch error and set build result to failure"}
       // Consider `when` step
       stepObject[`run`] = {};
-      stepObject[`run`][`command`] = 'exit 1';
       stepObject[`run`][`name`] = 'catchError is not currently supported.';
+      stepObject[`run`][`command`] = 'exit 1';
       stepObject[`run`][`STACK_TRACE`] =
+        step.name +
+        ' ' +
+        step[`arguments`][0][`value`][`value`] +
         'Please refer to the `when` documentation for advice on usage \
                 https://circleci.com/docs/2.0/configuration-reference/#the-when-step-requires-version-21\n \
                 https://support.circleci.com/hc/en-us/articles/360043188514-How-to-Retry-a-Failed-Step-with-when-Attribute-';
@@ -101,9 +107,14 @@ const directiveToCommand = (step) => {
     // {"withContext":  "Use contextual object from inte"}
     default: () => {
       stepObject[`run`] = {};
-      stepObject[`run`][`name`] = 'Unsupported keyword.\n';
+      stepObject[`run`][`name`] = 'Keyword not recognized\n';
       stepObject[`run`][`command`] = 'exit 1';
-      stepObject[`run`][`STACK_TRACE`] += step.name + ' ' + step.arguments[0].value.value;
+      stepObject[`run`][`STACK_TRACE`] =
+        'Please refer to CircleCI documentation (https://circleci.com/docs/reference-2-1/#section=configuration)\n' +
+        'and/or submit an issue at https://github.com/circleci/jenkinsfile-convertor\n' +
+        step.name +
+        ' ' +
+        step.arguments[0].value.value;
       return stepObject;
     }
   };
