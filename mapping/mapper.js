@@ -44,7 +44,7 @@ const mapStages = (stages, config) => {
     if (workflow.jobs.length > 0) {
       let precedingJobName;
       if (workflow.jobs.length === 1) {
-        precedingJobName = workflow.jobs[workflow.jobs.length - 1];
+        precedingJobName = [workflow.jobs[workflow.jobs.length - 1]];
       } else {
         precedingJobName = Object.keys(workflow.jobs[workflow.jobs.length - 1]);
       }
