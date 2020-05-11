@@ -40,14 +40,6 @@ class MainApp {
             '/i/to-json',
             JenkinsToCCIResponder.convertJenkinsfileToJSON
         );
-
-        this.expWrapper.armEndpoint(
-            'POST',
-            '/i',
-            // TODO: Replace convertJenkinsfileToJSON with convertJenkinsfileToConfigYml
-            // It is there only for backward compatibility
-            JenkinsToCCIResponder.convertJenkinsfileToJSON
-        );
     }
 }
 
