@@ -1,4 +1,11 @@
 module.exports = {
+    globals: {
+        'ts-jest': {
+            tsConfig: {
+                noImplicitAny: false
+            }
+        }
+    },
     preset: 'ts-jest',
     reporters: [
         'default',
