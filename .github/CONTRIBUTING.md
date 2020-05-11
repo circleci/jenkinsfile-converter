@@ -1,4 +1,4 @@
-# Jenkinsfile Convertor Contributing Guide
+# Jenkinsfile Converter Contributing Guide
 (Borrowed heavily from the contribution guide from the lovely folks at [vue.js](https://github.com/vuejs/vue))
 
 Hello! And thank you for your interest in contributing to this project. Before submitting your contribution, please review the following guidelines:
@@ -33,7 +33,7 @@ This project is built in Node.js version 12, and uses npm as the dependency mana
 
 ## Project Structure
 
-* `util`: contains the source code. Codebase is written in ES2016. The entrypoint to the convertor is `~/index.js`
+* `util`: contains the source code. Codebase is written in ES2016. The entrypoint to the converter is `~/index.js`
 * `static`: contains a dictionary on unsupported Jenkinsfile keywords and returns the relevant link to CircleCI documentation.
 * `model`: contains the data models into which Jenkinsfile data is loaded before reconstructing into `config.yml`. Written with CommonJS.
 * `test`: All tests are written with Mocha and Chai. `createConfigs.sh` and `validateConfigs.sh` are shell scripts that will call `index.js` recursively on all Jenkinsfiles contained with `test`, and then run `circleci config validate` (see [CircleCI Local CLI](https://circleci.com/docs/2.0/local-cli/)) on each config to run a smoke test on all resultant `config.yml` files.

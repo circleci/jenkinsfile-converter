@@ -2,14 +2,14 @@ version: 2.1
 description: |
   DEPRECATED AS OF 4/20/20
   Open-source proof-of-concept for converting a declarative Jenkinsfile to CircleCI 2.0 config.yml. \
-  This convertor is still in Alpha, and full compatability is not guaranteed. \
+  This converter is still in Alpha, and full compatability is not guaranteed. \
   config.yml is provided as an build artifact accessible via the CircleCI UI upon successful conversion. \
   Please visit https://github.com/heug/jenkinsfile-circleci to view source code, submit issues, and contribute!
 executors:
   base:
     docker:
       - image: cimg/base:2020.01
-  convertor:
+  converter:
     docker:
       - image: circleci/node:12.8.0
 
@@ -78,7 +78,7 @@ examples:
             steps:
               - j-cci/setup
           convert:
-            executor: j-cci/convertor
+            executor: j-cci/converter
             steps:
               - j-cci/install
               - j-cci/convert-to-circleci
@@ -113,7 +113,7 @@ examples:
             steps:
               - j-cci/setup
           convert:
-            executor: j-cci/convertor
+            executor: j-cci/converter
             steps:
               - j-cci/install
               - j-cci/convert-to-circleci:

@@ -1,4 +1,4 @@
-# Jenkinsfile Convertor
+# Jenkinsfile Converter
 A tool to help Jenkins users get a head start on building on CircleCI by converting a `Jenkinsfile` to CircleCI `config.yml`. 
 
 While this tool should output a valid `config.yml`, this tool is not yet feature complete. `config.yml` should be reviewed and edited as necessary before running the initial CircleCI build.

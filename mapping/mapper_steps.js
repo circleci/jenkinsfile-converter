@@ -103,7 +103,7 @@ const directiveToCommand = (step) => {
       stepObject[`run`][`command`] = 'exit 1';
       stepObject[`run`][`JFC_STACK_TRACE`] =
         'Please refer to CircleCI documentation (https://circleci.com/docs/reference-2-1/#section=configuration)\n' +
-        'and/or submit an issue at https://github.com/circleci/jenkinsfile-convertor\n' +
+        'and/or submit an issue at https://github.com/circleci/jenkinsfile-converter\n' +
         step.name +
         ' ' +
         step.arguments[0].value.value;
