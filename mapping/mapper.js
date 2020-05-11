@@ -39,7 +39,7 @@ const mapStages = (stages, config) => {
   stages.forEach((stage) => {
     const workflowJobConditionObj = new CircleWorkflowJobCondition();
     let job = new CircleJob();
-    let envVars = stage['environment'];
+    // let envVars = stage['environment'];
 
     if (workflow.jobs.length > 0) {
       let precedingJobName;
@@ -52,6 +52,8 @@ const mapStages = (stages, config) => {
     }
 
     if (!stage.parallel) {
+      job[`docker`] = [{ image: 'cimg/base' }];
+
       let workflowJobName = stage.name.replace(/ /g, '-');
       if (workflowJobConditionObj.requires === undefined) {
         workflow.jobs.push(workflowJobName);
@@ -63,6 +65,8 @@ const mapStages = (stages, config) => {
       config['jobs'][workflowJobName] = job;
     } else {
       stage.parallel.forEach((parallelStage) => {
+        job[`docker`] = [{ image: 'cimg/base' }];
+
         let workflowJobName = parallelStage.name.replace(/ /g, '-');
         if (workflowJobConditionObj.requires === undefined) {
           workflow.jobs.push(workflowJobName);
@@ -75,19 +79,19 @@ const mapStages = (stages, config) => {
       });
     }
 
-    if (envVars) {
-      envVars.forEach((envVar) => {
-        let key = envVar['key'];
-        let value = envVar['value'];
+    // if (envVars) {
+    //   envVars.forEach((envVar) => {
+    //     let key = envVar['key'];
+    //     let value = envVar['value'];
 
-        if (typeof value == 'object') {
-          // TODO: Here we would handle things such as 'credentials(xxxx)', for now just using the value itself.
-          // Currently grabbing the first argument from credentials(), need to check to see if there are possibly more to pass.
-          value = value['arguments'][0]['value'];
-        }
-        job.environment[key] = value;
-      });
-    }
+    //     if (typeof value == 'object') {
+    //       // TODO: Here we would handle things such as 'credentials(xxxx)', for now just using the value itself.
+    //       // Currently grabbing the first argument from credentials(), need to check to see if there are possibly more to pass.
+    //       value = value['arguments'][0]['value'];
+    //     }
+    //     job.environment[key] = value;
+    //   });
+    // }
   });
 };
 
