@@ -44,3 +44,9 @@ Even though it should be confirmed with `../.circleci/config.yml`, generally spe
 4. `yarn install`
 5. `yarn build`
 6. `docker build ./`
+
+# For devs: How to test the server
+
+`yarn ts-node` will run `ts-node` for debugging purposes.
+
+Note: There is no kind of "hot reload" available yet. I welcome any PR to enable it, while I'm satisfied with the current approach to run `ts-node` repetitively. ;)
