@@ -13,17 +13,34 @@ const formatErrorDetails = (err) => {
 // Main from here
 const jenkinsToCCI = async (jenkinsfile) => {
   const fromJenkins = (await axios.post(jenkinsTarget, querystring.stringify({ jenkinsfile: jenkinsfile.toString('utf-8') })).catch((err) => {
-    throw (new Error(`Error in Jenkins. Details:\n${formatErrorDetails(err)}`));
+    throw (new Error(`Error in parser. Details:\n${formatErrorDetails(err)}`));
   })).data;
+  let isFinal = false;
+
+  try {
+    if (fromJenkins.data.result === 'failure') {
+      let errorMsgArr = ['Failed to parse your Jenkinsfile for some reason. Here are error messages from the parser:'];
+
+      fromJenkins.data.errors.forEach((errorObj, index) => {
+        errorMsgArr.push(`${index + 1}. ${errorObj.error}`);
+      });
+
+      isFinal = true;
+      throw new Error(`${errorMsgArr.join('\n\n')}\n`);
+    }
+  } catch (err) {
+    throw isFinal ? err : new Error(`Error in verification of response from parser. Details:\n${formatErrorDetails(err)}`)
+  }
 
   try {
     const jenkinsObj = fromJenkins.data.json;
     const circleConfig = map(jenkinsObj);
     const configYml = circleConfig.toYAML();
 
+    isFinal = true;
     return configYml;
   } catch (err) {
-    throw (new Error(`Error in mapping. Details:\n${formatErrorDetails(err)}`));
+    throw new Error(`Error in mapping. Details:\n${formatErrorDetails(err)}`);
   }
 };
 
