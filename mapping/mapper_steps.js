@@ -31,7 +31,8 @@ const directiveToCommand = (step) => {
       stepObject[`run`] = {};
       stepObject[`run`][`name`] = 'script is not currently supported.';
       stepObject[`run`][`command`] = 'exit 1';
-      stepObject[`run`][`STACK_TRACE`] = step.name + ' ' + step[`arguments`][0][`value`][`value`];
+      stepObject[`run`][`JFC_STACK_TRACE`] =
+        step.name + ' ' + step[`arguments`][0][`value`][`value`];
       return stepObject;
     },
     sh: () => {
@@ -40,7 +41,7 @@ const directiveToCommand = (step) => {
         stepObject[`run`] = {};
         stepObject[`run`][`name`] = 'Confirm environment variables are set before running';
         stepObject[`run`][`command`] = 'exit 1';
-        stepObject[`run`][`STACK_TRACE`] =
+        stepObject[`run`][`JFC_STACK_TRACE`] =
           'Please refer to environment variable documentation for more information' +
           '\nhttps://circleci.com/docs/2.0/env-vars/\n' +
           step.name +
@@ -67,7 +68,7 @@ const directiveToCommand = (step) => {
       stepObject[`run`] = {};
       stepObject[`run`][`name`] = 'catchError is not currently supported.';
       stepObject[`run`][`command`] = 'exit 1';
-      stepObject[`run`][`STACK_TRACE`] =
+      stepObject[`run`][`JFC_STACK_TRACE`] =
         step.name +
         ' ' +
         step[`arguments`][0][`value`][`value`] +
@@ -109,7 +110,7 @@ const directiveToCommand = (step) => {
       stepObject[`run`] = {};
       stepObject[`run`][`name`] = 'Keyword not recognized\n';
       stepObject[`run`][`command`] = 'exit 1';
-      stepObject[`run`][`STACK_TRACE`] =
+      stepObject[`run`][`JFC_STACK_TRACE`] =
         'Please refer to CircleCI documentation (https://circleci.com/docs/reference-2-1/#section=configuration)\n' +
         'and/or submit an issue at https://github.com/circleci/jenkinsfile-convertor\n' +
         step.name +
