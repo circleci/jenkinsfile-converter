@@ -1,4 +1,5 @@
 module.exports = {
+    coveragePathIgnorePatterns: ['node_modules', 'assets/jfc-module.js'],
     globals: {
         'ts-jest': {
             tsConfig: {

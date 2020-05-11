@@ -1,15 +1,17 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 
-import type * as http from 'http';
+import { VersionNumberService } from './services/VersionNumberService';
 
-declare const __BUILD_VERSION: string;
+import type * as http from 'http';
 
 class ExpressWrapper {
     private readonly listenAddrs = ['::'];
     private readonly listenPort = 28080;
 
-    public services = {};
+    public services = {
+        VersionNumber: new VersionNumberService()
+    };
 
     private app: express.Express = express();
     private httpServers: http.Server[] = [];
@@ -72,9 +74,7 @@ class ExpressWrapper {
     ) {
         res.setHeader(
             'X-App-Version',
-            typeof __BUILD_VERSION === typeof '' && __BUILD_VERSION
-                ? __BUILD_VERSION
-                : 'local'
+            this.services.VersionNumber.versionNumber
         );
         next();
     }

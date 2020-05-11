@@ -3,6 +3,7 @@ import { ExpressWrapper } from './ExpressWrapper';
 const mockExpApp: { [key: string]: jest.Mock<any, any> } = {
     use: jest.fn(),
     get: jest.fn(),
+    checkout: jest.fn(),
     listenSuccess: jest.fn((port, addr, cb) => cb()),
     listenFail: jest.fn(() => {
         throw new Error();
@@ -61,9 +62,16 @@ describe('startListening', () => {
 describe('armEndpoint', () => {
     const wrapper = new ExpressWrapper();
 
-    test('get', () => {
+    // Just test the one on the top of the list of supported methods
+    test('checkout', () => {
         mockExpApp.get.mockClear();
-        wrapper.armEndpoint('GET', '/', () => void 0);
-        expect(mockExpApp.get).toHaveBeenCalled();
+        wrapper.armEndpoint('CHECKOUT', '/', () => void 0);
+        expect(mockExpApp.checkout).toHaveBeenCalled();
+    });
+
+    test('something unknown', () => {
+        wrapper.armEndpoint('GOT', '', null);
+        // Assert nothing because coming here without an error is the criteria for a success
+        // i.e. Literally nothing should happen
     });
 });

@@ -5,6 +5,12 @@ import type * as express from 'express';
 const reqBody = 'groovy';
 const resBody = 'yaml or json';
 
+const mockServices = {
+    VersionNumber: {
+        versionNumber: 'jest'
+    }
+};
+
 const mockReq = {
     body: reqBody
 };
@@ -24,7 +30,6 @@ const mockRes = () => {
     return {
         status: jest.fn().mockReturnThis(),
         set: jest.fn().mockReturnThis(),
-        json: jest.fn().mockReturnThis(),
         end: jest.fn().mockReturnThis()
     };
 };
@@ -45,13 +50,13 @@ describe('convertJenkinsfileToConfigYml', () => {
         );
 
         await JenkinsToCCIResponder.convertJenkinsfileToConfigYml(
-            null,
+            mockServices,
             (<unknown>req) as express.Request,
             (<unknown>res) as express.Response
         );
 
         await JenkinsToCCIResponder.convertJenkinsfileToConfigYml(
-            null,
+            mockServices,
             (<unknown>req) as express.Request,
             (<unknown>res) as express.Response
         );
@@ -74,29 +79,41 @@ describe('convertJenkinsfileToConfigYml', () => {
     test('error-handling', () => {
         expect(res.status.mock.calls[1][0]).toBe(500);
         expect(res.set.mock.calls[1][0]).toBe('Content-Type');
-        expect(res.set.mock.calls[1][1]).toBe('application/json');
-        expect(res.json).toHaveBeenCalled();
+        expect(res.set.mock.calls[1][1]).toBe('text/plain; charset=UTF-8');
+        expect(res.end).toHaveBeenCalled();
     });
 });
 
 describe('convertJenkinsfileToJSON', () => {
     const req = mockReq;
     const res = mockRes();
+    const customJenkins = 'https://jenkins.example.com/';
 
     beforeAll(async () => {
         const axios = require('axios');
 
         axios.post.mockImplementationOnce(mockAxiosPost);
+        axios.post.mockImplementationOnce(mockAxiosPost);
         axios.post.mockImplementationOnce(mockAxiosPostWithReject);
 
         await JenkinsToCCIResponder.convertJenkinsfileToJSON(
-            null,
+            mockServices,
+            (<unknown>req) as express.Request,
+            (<unknown>res) as express.Response
+        );
+
+        Object.defineProperty(global, '__JENKINS_TARGET', {
+            value: 'https://jenkins.example.com/'
+        });
+
+        await JenkinsToCCIResponder.convertJenkinsfileToJSON(
+            mockServices,
             (<unknown>req) as express.Request,
             (<unknown>res) as express.Response
         );
 
         await JenkinsToCCIResponder.convertJenkinsfileToJSON(
-            null,
+            mockServices,
             (<unknown>req) as express.Request,
             (<unknown>res) as express.Response
         );
@@ -107,6 +124,8 @@ describe('convertJenkinsfileToJSON', () => {
             'https://jenkinsto.cc/i/to-json'
         );
         expect(mockAxiosPost.mock.calls[0][1]).toBe(reqBody);
+        expect(mockAxiosPost.mock.calls[1][0]).toBe(customJenkins);
+        expect(mockAxiosPost.mock.calls[1][1]).toBe(reqBody);
     });
 
     test('header', () => {
@@ -120,9 +139,9 @@ describe('convertJenkinsfileToJSON', () => {
     });
 
     test('error-handling', () => {
-        expect(res.status.mock.calls[1][0]).toBe(500);
-        expect(res.set.mock.calls[1][0]).toBe('Content-Type');
-        expect(res.set.mock.calls[1][1]).toBe('application/json');
-        expect(res.json).toHaveBeenCalled();
+        expect(res.status.mock.calls[2][0]).toBe(500);
+        expect(res.set.mock.calls[2][0]).toBe('Content-Type');
+        expect(res.set.mock.calls[2][1]).toBe('text/plain; charset=UTF-8');
+        expect(res.end).toHaveBeenCalled();
     });
 });
