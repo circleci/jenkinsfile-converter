@@ -10,7 +10,6 @@ jobs:
     working_directory: ~/project
     steps:
       - checkout
-      - run: sudo apt-get install git=2.13.0 -V
       # - restore_cache:
       #     keys:
       #       - v1-npm-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
