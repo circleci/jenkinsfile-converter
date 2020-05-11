@@ -7,7 +7,7 @@ For more about CircleCI, see https://circleci.com
 
 ## Quick start
 
-`curl --data-binary @your-jenkinsfile.groovy https://jenkinsto.cc/i/do`
+`curl --data-binary @your-jenkinsfile.groovy https://jenkinsto.cc/i`
 
 where `your-jenkinsfile.groovy` is a path to your Jenkinsfile to convert.
 

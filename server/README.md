@@ -4,7 +4,7 @@ This is a module which implements a HTTP server exposing endpoints which parse a
 
 # How to see it working?
 
-e.g. `curl --data-binary @your-jenkinsfile.groovy https://jenkinsto.cc/i/do`
+e.g. `curl --data-binary @your-jenkinsfile.groovy https://jenkinsto.cc/i`
 
 # How does it work?
 
