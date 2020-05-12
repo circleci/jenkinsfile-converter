@@ -14,7 +14,7 @@ where `your-jenkinsfile.groovy` is a path to your Jenkinsfile to convert.
 
 ## Companion Guide
 
-Please read the [companion guide](GUIDE.md) after converting your Jenkinsfile to a config.yml to better understand the output and to get the most out of your CircleCI configuration.
+Please read the [companion guide](./docs/GUIDE.md) after converting your Jenkinsfile to a config.yml to better understand the output and to get the most out of your CircleCI configuration.
 
 ## Supported Syntax
 

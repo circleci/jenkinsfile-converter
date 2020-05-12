@@ -48,3 +48,7 @@ Jenkinsfiles can be converted into the JSON format that is then ingested by the 
 - `model`: contains the data models into which the building blocks of a CircleCI config (e.g. workflows, jobs, steps) are loaded into before hydration into `config.yml` via [js-yaml](https://github.com/nodeca/js-yaml). Written with CommonJS.
 - `server`: code for running the JFC as an API service. Written in nodeJS.
 - `test`: All tests are written with Mocha and Chai. `createConfigs.sh` and `validateConfigs.sh` are shell scripts that will call `index.js` recursively on all Jenkinsfiles contained with `test`, and then run `circleci config validate` (see [CircleCI Local CLI](https://circleci.com/docs/2.0/local-cli/)) on each config to run a smoke test on all resultant `config.yml` files.
+
+## Architectural Diagram
+
+Please enjoy a [hand-drawn architectural diagram](../docs/architecture.jpg) until we're able to create a digital version :)
