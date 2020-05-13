@@ -3,6 +3,28 @@ pipeline {
 
     stages {
         stage("build and deploy on Windows and Linux") {
+            parallel {
+                stage("windows") {
+                    agent {
+                        label "windows"
+                    }
+                    stages {
+                        stage("build") {
+                            steps {
+                                bat "run-build.bat"
+                            }
+                        }
+                        stage("deploy") {
+                            when {
+                                branch "master"
+                            }
+                            steps {
+                                bat "run-deploy.bat"
+                            }
+                        }
+                    }
+                }
+
                 stage("linux") {
                     agent {
                         label "linux"
@@ -21,6 +43,7 @@ pipeline {
                                 sh "./run-deploy.sh"
                             }
                         }
+                    }
                 }
             }
         }
