@@ -14,6 +14,7 @@ jobs:
           keys:
             - v2-npm-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
             - v2-npm-deps-{{ .Branch }}
+            - v2-npm-deps-dev
             - v2-npm-deps
       - run:
           name: install dependencies
@@ -36,6 +37,7 @@ jobs:
           keys:
             - v2-npm-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
             - v2-npm-deps-{{ .Branch }}
+            - v2-npm-deps-dev
             - v2-npm-deps
       - run:
           name: install dependencies
