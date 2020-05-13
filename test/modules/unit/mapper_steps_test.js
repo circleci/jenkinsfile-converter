@@ -20,7 +20,10 @@ describe('jenkins', () => {
         ]
       };
       let result = directiveToCommand(tester);
-      expect(result).to.have.property(`run`, `mvn sonar:sonar -Dsonar.login=$SONAR_PSW`);
+      expect(result).to.have.nested.property(
+        'run.command',
+        `mvn sonar:sonar -Dsonar.login=$SONAR_PSW`
+      );
     });
     it('handles echo', () => {
       const tester = {
@@ -36,7 +39,7 @@ describe('jenkins', () => {
         ]
       };
       let result = directiveToCommand(tester);
-      expect(result).to.have.property(`run`, `echo "Run integration tests here..."`);
+      expect(result).to.have.nested.property('run.command', `echo "Run integration tests here..."`);
     });
     it('handles catchError', () => {
       // const tester = {
@@ -96,10 +99,10 @@ describe('jenkins', () => {
         ]
       };
       let result = directiveToCommand(tester);
-      expect(result[0]).to.have.property(`run`, `echo $FOO > foo.txt`);
-      expect(result[0]).to.have.property(`working_directory`, `combined`);
-      expect(result[1]).to.have.property(`run`, `echo "tester"`);
-      expect(result[1]).to.have.property(`working_directory`, `combined`);
+      expect(result[0]).to.have.nested.property('run.command', `echo $FOO > foo.txt`);
+      expect(result[0]).to.have.nested.property('run.working_directory', `combined`);
+      expect(result[1]).to.have.nested.property('run.command', `echo "tester"`);
+      expect(result[1]).to.have.nested.property('run.working_directory', `combined`);
     });
   });
 });
