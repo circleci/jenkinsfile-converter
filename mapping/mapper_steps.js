@@ -28,8 +28,8 @@ const directiveToCommand = (step) => {
     },
     sh: () => {
       // {"sh":  "Shell command"}
+      stepObject[`run`] = {};
       if (!isLiteral(step)) {
-        stepObject[`run`] = {};
         stepObject[`run`][`name`] = 'Confirm environment variables are set before running';
         stepObject[`run`][`command`] = 'exit 1';
         stepObject[`run`][`JFC_STACK_TRACE`] =
@@ -39,18 +39,20 @@ const directiveToCommand = (step) => {
           ' ' +
           step[`arguments`][0][`value`][`value`];
       } else {
-        stepObject[`run`] = step[`arguments`][0][`value`][`value`];
+        stepObject[`run`][`command`] = step[`arguments`][0][`value`][`value`];
       }
       return stepObject;
     },
     echo: () => {
       // {"echo":  "Print Message"}
-      stepObject[`run`] = 'echo "' + step[`arguments`][0][`value`][`value`] + '"';
+      stepObject[`run`] = {};
+      stepObject[`run`][`command`] = 'echo "' + step[`arguments`][0][`value`][`value`] + '"';
       return stepObject;
     },
     sleep: () => {
       // {"sleep":  "Sleep"}
-      stepObject[`run`] = 'sleep ' + step[`arguments`][0][`value`][`value`];
+      stepObject[`run`] = {};
+      stepObject[`run`][`command`] = 'sleep ' + step[`arguments`][0][`value`][`value`];
       return stepObject;
     },
     catchError: () => {
@@ -71,7 +73,9 @@ const directiveToCommand = (step) => {
     dir: () => {
       // {"dir":  "Change current directory"}
       let stepsArr = fnPerVerb(step.children);
-      stepsArr.map((stepObj) => (stepObj[`working_directory`] = step.arguments.value));
+      stepsArr.forEach((stepObject) => {
+        stepObject[`run`][`working_directory`] = step.arguments.value;
+      });
       return stepsArr;
     },
     // {"deleteDir":  "Recursively delete the current directory from the workspace"}
