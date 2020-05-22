@@ -12,6 +12,17 @@ For more about CircleCI, see https://circleci.com
 
 where `your-jenkinsfile.groovy` is a path to your Jenkinsfile to convert.
 
+## Limitations
+
+* Limited number of syntaxes and plugins are supported. Jenkinsfiles relying on unsupported syntaxes and plugins cannot be converted. Please manually remove them.
+
+* Limited number of `tools` and their installations are supported. For instance:
+
+    * Only `Default` is supported as a tool name for `maven`, `jdk` and `gradle` in [`tools` block](https://www.jenkins.io/doc/book/pipeline/syntax/#tools).
+    * Only `Default` installation for [`withAnt` step](https://www.jenkins.io/doc/pipeline/steps/ant/) is supported.
+
+  Otherwise conversions will fail. Please configure them appropriately or remove them manually.
+
 ## Companion Guide
 
 Please read the [companion guide](./docs/GUIDE.md) after converting your Jenkinsfile to a config.yml to better understand the output and to get the most out of your CircleCI configuration.
