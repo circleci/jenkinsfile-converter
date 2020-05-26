@@ -12,11 +12,28 @@ For more about CircleCI, see https://circleci.com
 
 where `your-jenkinsfile.groovy` is a path to your Jenkinsfile to convert.
 
+For example, `curl --data-binary @./configs/myJenkinsFile.groovy https://jenkinsto.cc/i`
+
 ## Limitations
 
 * Limited number of syntaxes and plugins are supported. Jenkinsfiles relying on unsupported syntaxes and plugins cannot be converted. Please manually remove them.
 
 * Only `Default` is supported as a tool name for `maven`, `jdk` and `gradle` in [`tools` block](https://www.jenkins.io/doc/book/pipeline/syntax/#tools) and other names will cause conversion failures. Please configure them appropriately or remove them manually.
+
+For example, the following stanza:
+```
+tools {
+  maven 'Maven 3.6.3'
+  jdk 'Corretto 8.232'
+}
+```
+should be changed to:
+```
+tools {
+  maven 'Default'
+  jdk 'Default'
+}
+```
 
 ## Companion Guide
 
