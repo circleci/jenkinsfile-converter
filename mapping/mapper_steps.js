@@ -299,13 +299,76 @@ const directiveToCommand = (step) => {
       stepObject[`run`][`command`] = '[ $(uname -s) = "Linux" ]; exit $?';
       return stepObject;
     },
-    // {"deleteDir":  "Recursively delete the current directory from the workspace"}
-    // {"retry":  "Retry the body up to N times"}
-    // {"timeout":  "Enforce time limit"}
-    // {"tool":  "Use a tool from a predefined Tool Installation"}
-
-    // {"waitUntil":  "Wait for condition"}
-    // {"wrap":  "General Build Wrapper"}
+    deleteDir: () => {
+      // {"deleteDir":  "Recursively delete the current directory from the workspace"}
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Revisit need to use deleteDir';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`JFC_STACK_TRACE`] =
+        step.name +
+        ' ' +
+        step[`arguments`][0][`value`][`value`] +
+        'CircleCI builds are deterministic. For more information, please read \
+                https://circleci.com/blog/preserve-build-integrity-prevent-problems-deterministic-builds/';
+      return stepObject;
+    },
+    retry: () => {
+      // {"retry":  "Retry the body up to N times"}
+      // Consider `when` step
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Use conditional steps';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`JFC_STACK_TRACE`] =
+        step.name +
+        ' ' +
+        step[`arguments`][0][`value`][`value`] +
+        'Please refer to the `when` documentation for advice on usage \
+                https://circleci.com/docs/2.0/configuration-reference/#the-when-step-requires-version-21\n \
+                https://support.circleci.com/hc/en-us/articles/360043188514-How-to-Retry-a-Failed-Step-with-when-Attribute-';
+      return stepObject;
+    },
+    timeout: () => {
+      // {"timeout":  "Enforce time limit"}
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Use conditional steps';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`no_output_timeout`] = '10m';
+      stepObject[`run`][`JFC_STACK_TRACE`] =
+        step.name +
+        ' ' +
+        step[`arguments`][0][`value`][`value`] +
+        'Please refer to the `run` documentation for advice on no_output_timeout usage \
+                https://circleci.com/docs/2.0/configuration-reference/#run';
+      return stepObject;
+    },
+    tool: () => {
+      // {"tool":  "Use a tool from a predefined Tool Installation"}
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'No plug-ins in CircleCI';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`JFC_STACK_TRACE`] =
+        step.name +
+        ' ' +
+        step[`arguments`][0][`value`][`value`] +
+        'You may find the following documentation helpful \
+                https://circleci.com/docs/2.0/migrating-from-jenkins/#plugins';
+      return stepObject;
+    },
+    waitUntil: () => {
+      // {"waitUntil":  "Wait for condition"}
+      // Consider `when` step
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Use conditional steps';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`JFC_STACK_TRACE`] =
+        step.name +
+        ' ' +
+        step[`arguments`][0][`value`][`value`] +
+        'Please refer to the `when` documentation for advice on usage \
+                https://circleci.com/docs/2.0/configuration-reference/#the-when-step-requires-version-21\n \
+                https://support.circleci.com/hc/en-us/articles/360043188514-How-to-Retry-a-Failed-Step-with-when-Attribute-';
+      return stepObject;
+    },
     default: () => {
       stepObject[`run`] = {};
       stepObject[`run`][`name`] = 'Keyword not recognized\n';
