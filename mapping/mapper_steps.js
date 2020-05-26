@@ -215,6 +215,19 @@ const directiveToCommand = (step) => {
                 https://circleci.com/docs/2.0/concepts/#caches-workspaces-and-artifacts/";
       return stepObject;
     },
+    unstash: () => {
+      // {"unstash":  "Restore files previously stashed"}
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Use CircleCI caches or workspaces';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`JFC_STACK_TRACE`] =
+        step.name +
+        ' ' +
+        step[`arguments`][0][`value`][`value`] +
+        "CircleCI has different syntax for working with persisted data. Here's a good place to start: \
+                https://circleci.com/docs/2.0/concepts/#caches-workspaces-and-artifacts/";
+      return stepObject;
+    },
     archive: () => {
       // {"archive":  "Archive artifacts"}
       stepObject[`run`] = {};
@@ -290,7 +303,7 @@ const directiveToCommand = (step) => {
     // {"retry":  "Retry the body up to N times"}
     // {"timeout":  "Enforce time limit"}
     // {"tool":  "Use a tool from a predefined Tool Installation"}
-    // {"unstash":  "Restore files previously stashed"}
+
     // {"waitUntil":  "Wait for condition"}
     // {"wrap":  "General Build Wrapper"}
     default: () => {
