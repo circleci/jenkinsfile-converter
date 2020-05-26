@@ -20,10 +20,14 @@ const directiveToCommand = (step) => {
     script: () => {
       // {"sh":  "Run arbitrary Java"}
       stepObject[`run`] = {};
-      stepObject[`run`][`name`] = 'script is not currently supported.';
+      stepObject[`run`][`name`] = 'Consider re-writing as a CircleCI run step';
       stepObject[`run`][`command`] = 'exit 1';
       stepObject[`run`][`JFC_STACK_TRACE`] =
-        step.name + ' ' + step[`arguments`][0][`value`][`value`];
+        'Please refer to environment variable documentation for more information' +
+        'https://circleci.com/docs/2.0/configuration-reference/#run' +
+        step.name +
+        ' ' +
+        step[`arguments`][0][`value`][`value`];
       return stepObject;
     },
     sh: () => {
@@ -59,7 +63,7 @@ const directiveToCommand = (step) => {
       // {"catchError": "Catch error and set build result to failure"}
       // Consider `when` step
       stepObject[`run`] = {};
-      stepObject[`run`][`name`] = 'catchError is not currently supported.';
+      stepObject[`run`][`name`] = 'Use conditional steps';
       stepObject[`run`][`command`] = 'exit 1';
       stepObject[`run`][`JFC_STACK_TRACE`] =
         step.name +
@@ -78,15 +82,101 @@ const directiveToCommand = (step) => {
       });
       return stepsArr;
     },
+    mail: () => {
+      // {"mail":  "Mail"}
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Use built-in e-mail notifications';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`JFC_STACK_TRACE`] =
+        step.name +
+        ' ' +
+        step[`arguments`][0][`value`][`value`] +
+        'Please refer to our documentation for how to set and change various types of notification \
+                https://circleci.com/docs/2.0/notifications/';
+      return stepObject;
+    },
+    error: () => {
+      // {"error":  "Error signal"}
+      // Consider `when` step
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Use conditional steps';
+      stepObject[`run`][`command`] = 'exit 1';
+      stepObject[`run`][`JFC_STACK_TRACE`] =
+        step.name +
+        ' ' +
+        step[`arguments`][0][`value`][`value`] +
+        'Please refer to the `when` documentation for advice on usage \
+                https://circleci.com/docs/2.0/configuration-reference/#the-when-step-requires-version-21\n \
+                https://support.circleci.com/hc/en-us/articles/360043188514-How-to-Retry-a-Failed-Step-with-when-Attribute-';
+      return stepObject;
+    },
+    pwd: () => {
+      // {"pwd":  "Determine current directory"}
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Print working directory';
+      stepObject[`run`][`command`] = 'pwd';
+      return stepObject;
+    },
+    fileExists: () => {
+      // {"fileExists":  "Verify if file exists in workspace"}
+      // Consider `when` step
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Check if file exists';
+      stepObject[`run`][`command`] =
+        'if test -f "' +
+        step[`arguments`][0][`value`][`value`] +
+        '"; then \
+          echo "file exists" \
+          exit 0" \
+        fi \
+        exit 1';
+      return stepObject;
+    },
+    withEnv: () => {
+      // {"withEnv":  "Set environment variables"}
+      let jenkinsEnvVarArr = step.arguments.value.split(',');
+      let jsonEnvVarArr = [];
+
+      jenkinsEnvVarArr.forEach((envVar) => {
+        jsonEnvVarArr.push(envVar.substring(1, envVar.length - 1));
+      });
+      jsonEnvVarArr[0] = jsonEnvVarArr[0].substring(3);
+      jsonEnvVarArr[jsonEnvVarArr.length - 1] = jsonEnvVarArr[jsonEnvVarArr.length - 1].substring(
+        0,
+        jsonEnvVarArr[jsonEnvVarArr.length - 1].length - 2
+      );
+
+      let envVarObj = jsonEnvVarArr.reduce((obj, kv) => {
+        let kvParts = kv.split('=');
+        if (kvParts[0] && kvParts[1]) {
+          obj[kvParts[0]] = kvParts[1];
+        }
+        return obj;
+      }, {});
+
+      let fullEnvObj = {};
+      for (var key in envVarObj) {
+        fullEnvObj[key] = envVarObj[key];
+      }
+
+      let stepsArr = fnPerVerb(step.children);
+      stepsArr.forEach((stepObject) => {
+        stepObject[`run`][`name`] = 'Run command with defined env vars';
+        stepObject[`run`][`environment`] = fullEnvObj;
+      });
+
+      return stepsArr;
+    },
+    readFile: () => {
+      // {"readFile":  "Read file from workspace"}
+      stepObject[`run`] = {};
+      stepObject[`run`][`name`] = 'Running readFile with cat';
+      stepObject[`run`][`command`] = 'cat ' + step[`arguments`][0][`value`][`value`];
+      return stepObject;
+    },
     // {"deleteDir":  "Recursively delete the current directory from the workspace"}
-    // {"error":  "Error signal"}
-    // {"fileExists":  "Verify if file exists in workspace"}
     // {"isUnix":  "Checks if running on a Unix-like node"}
-    // {"mail":  "Mail"}
-    // {"pwd":  "Determine current directory"}
-    // {"readFile":  "Read file from workspace"}
     // {"retry":  "Retry the body up to N times"}
-    // {"stash":  "Stash some files to be used later in the build"}
     // {"step":  "General Build Step"}
     // {"timeout":  "Enforce time limit"}
     // {"tool":  "Use a tool from a predefined Tool Installation"}
@@ -94,7 +184,6 @@ const directiveToCommand = (step) => {
     // {"unstash":  "Restore files previously stashed"}
     // {"waitUntil":  "Wait for condition"}
     // {"warnError":  "Catch error and set build and stage result to unstable"}
-    // {"withEnv":  "Set environment variables"}
     // {"wrap":  "General Build Wrapper"}
     // {"writeFile":  "Write file to workspace"}
     // {"archive":  "Archive artifacts"}

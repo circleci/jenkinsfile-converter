@@ -16,7 +16,20 @@ pipeline {
             steps {
                 // all credential values are available for use but will be masked in console log
                 sh 'echo "FOO is $FOO"'
-                sh 'echo "FOO_USR is $FOO_USR"'
+                withEnv(['MYTOOL_HOME=/usr/local/mytool','TESTER=/tmp','TESTER3=a']) {
+                    sh 'echo "FOO_USR is $FOO_USR"'
+                    sh 'echo "hi"'
+                    sh 'echo "hello"'
+                }
+                withEnv(['MYTOOL_HOME=/usr/local/mytool','TESTER=/tmp']) {
+                    sh 'echo "FOO_USR is $FOO_USR"'
+                    sh 'echo "hi"'
+                    sh 'echo "hello"'
+                }
+                withEnv(['MYTOOL_HOME=/usr/local/mytool']) {
+                    sh 'echo "FOO_USR is $FOO_USR"'
+                    sh 'echo "hi"'
+                }
                 sh 'echo "FOO_PSW is $FOO_PSW"'
 
                 //Write to file
