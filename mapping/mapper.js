@@ -44,34 +44,44 @@ const map = (arr) => {
 const mapStages = (stages, config) => {
   const workflow = new CircleWorkflowItem();
   // Hard-coded workflow name--no multiple workflow support yet
-  config['workflows']['build-and-test'] = workflow;
+  config.workflows['build-and-test'] = workflow;
 
-  stages.forEach((stage) => {
-    const workflowJobConditionObj = new CircleWorkflowJobCondition();
-    // let envVars = stage['environment'];
+  let nextRequires = undefined;
 
-    if (workflow.jobs.length > 0) {
-      let precedingJobName;
-      if (workflow.jobs.length === 1) {
-        precedingJobName = [workflow.jobs[workflow.jobs.length - 1]];
+  const mapChildren = (nestedStages, isParallel) => {
+    let requires = [];
+
+    nestedStages.forEach((prop) => {
+      if (prop.branches) {
+        const workflowJobCondition = new CircleWorkflowJobCondition();
+
+        if (nextRequires) {
+          workflowJobCondition.requires = nextRequires;
+        }
+
+        const [jobName, job] = mapJob(prop, workflow, workflowJobCondition);
+
+        if (isParallel) {
+          requires.push(jobName);
+        } else {
+          nextRequires = jobName;
+        }
+
+        config.jobs[jobName] = job;
       } else {
-        precedingJobName = Object.keys(workflow.jobs[workflow.jobs.length - 1]);
+        mapChildren(prop.parallel || prop.stages, prop.parallel);
       }
+    });
 
-      workflowJobConditionObj['requires'] = precedingJobName;
+    if (requires.length) {
+      nextRequires = requires;
     }
+  };
 
-    if (!stage.parallel) {
-      mapJob(stage, workflow, workflowJobConditionObj, config['jobs']);
-    } else {
-      stage.parallel.forEach((parallelStage) => {
-        mapJob(parallelStage, workflow, workflowJobConditionObj, config['jobs']);
-      });
-    }
-  });
+  mapChildren(stages);
 };
 
-const mapJob = (stage, workflow, conditions, config) => {
+const mapJob = (stage, workflow, conditions) => {
   let job = new CircleJob();
 
   job.docker = [{ image: 'cimg/base' }];
@@ -79,15 +89,15 @@ const mapJob = (stage, workflow, conditions, config) => {
 
   mapConditions(stage, conditions);
 
-  let workflowJobName = stage.name.replace(/ /g, '-').toLowerCase();
+  let jobName = stage.name.replace(/ /g, '-').toLowerCase();
   if (assignedFields(conditions)) {
-    workflow.jobs.push({ [workflowJobName]: conditions });
+    workflow.jobs.push({ [jobName]: conditions });
   } else {
-    workflow.jobs.push(workflowJobName);
+    workflow.jobs.push(jobName);
   }
 
   job.steps = fnPerVerb(stage.branches[0].steps);
-  config[workflowJobName] = job;
+  return [jobName, job];
 };
 
 module.exports = { map };
