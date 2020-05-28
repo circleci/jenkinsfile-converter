@@ -27,7 +27,7 @@ const map = (arr) => {
     return undefined;
   }
 
-  mapEnvironment(pipeline, 'pipeline');
+  mapEnvironment(pipeline, 0);
 
   const stages = pipeline['stages'];
 
@@ -47,6 +47,7 @@ const mapStages = (stages, config) => {
   config.workflows['build-and-test'] = workflow;
 
   let nextRequires = undefined;
+  let envDepth = 1;
 
   const mapChildren = (nestedStages, isParallel) => {
     let requires = [];
@@ -59,7 +60,7 @@ const mapStages = (stages, config) => {
           workflowJobCondition.requires = nextRequires;
         }
 
-        const [jobName, job] = mapJob(prop, workflow, workflowJobCondition);
+        const [jobName, job] = mapJob(prop, workflow, workflowJobCondition, envDepth);
 
         if (isParallel) {
           requires.push(jobName);
@@ -69,7 +70,10 @@ const mapStages = (stages, config) => {
 
         config.jobs[jobName] = job;
       } else {
+        mapEnvironment(prop, envDepth);
+        envDepth++;
         mapChildren(prop.parallel || prop.stages, prop.parallel);
+        envDepth--;
       }
     });
 
@@ -81,11 +85,11 @@ const mapStages = (stages, config) => {
   mapChildren(stages);
 };
 
-const mapJob = (stage, workflow, conditions) => {
+const mapJob = (stage, workflow, conditions, envDepth) => {
   let job = new CircleJob();
 
   job.docker = [{ image: 'cimg/base' }];
-  job.environment = mapEnvironment(stage, 'stage');
+  job.environment = mapEnvironment(stage, envDepth);
 
   mapConditions(stage, conditions);
 

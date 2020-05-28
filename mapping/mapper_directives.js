@@ -1,12 +1,17 @@
 const envVarLayers = {};
 
-const mapEnvironment = (prop, propType) => {
+const mapEnvironment = (prop, envDepth) => {
   const envVars = prop['environment'];
 
-  if (envVars) {
-    let mappedEnvVars =
-      propType !== 'pipeline' && envVarLayers['pipeline'] ? { ...envVarLayers['pipeline'] } : {};
+  let mappedEnvVars = {};
 
+  for (let i = 0; i < envDepth; i++) {
+    if (envVarLayers[i]) {
+      mappedEnvVars = { ...mappedEnvVars, ...envVarLayers[i] };
+    }
+  }
+
+  if (envVars) {
     envVars.forEach((ev) => {
       let key = ev['key'];
       let value = ev['value'];
@@ -19,8 +24,10 @@ const mapEnvironment = (prop, propType) => {
         mappedEnvVars[key] = 'Unsupported Environment Variable Type!';
       }
     });
+  }
 
-    envVarLayers[propType] = mappedEnvVars;
+  if (Object.values(mappedEnvVars).length) {
+    envVarLayers[envDepth] = mappedEnvVars;
 
     return mappedEnvVars;
   }
