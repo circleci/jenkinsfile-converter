@@ -75,7 +75,10 @@ const mapStages = (stages, mapEnvironment, config) => {
 const mapJob = (stage, mapEnvironment, workflow, conditions, config) => {
   let job = new CircleJob();
 
-  job.docker = [{ image: 'cimg/base' }];
+  // goes 2 days back to make sure monthly snapshot has had time to be created (2nd of month)
+  let curDate = new Date(Date.now() - 172800000);
+  let curMonth = (curDate.getMonth() < 9 ? '0' : '') + (curDate.getMonth() + 1);
+  job.docker = [{ image: 'cimg/base:' + curDate.getFullYear() + '.' + curMonth }];
   job.environment = mapEnvironment(stage, 'stage');
 
   mapConditions(stage, conditions);
