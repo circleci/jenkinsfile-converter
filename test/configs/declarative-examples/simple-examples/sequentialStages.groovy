@@ -1,25 +1,48 @@
 pipeline {
     agent none
 
+    environment {
+      FOO = "BAR"
+    }
+
     stages {
         stage("build and deploy on Windows and Linux") {
-            parallel {
+            stages {
                 stage("windows") {
                     agent {
                         label "windows"
                     }
                     stages {
                         stage("build") {
-                            steps {
-                                bat "run-build.bat"
-                            }
+                          steps {
+                              bat "run-build.bat"
+                          }
                         }
+
+                        stage("sequential in sequential") {
+                          parallel {
+                            stage("test1") {
+                              environment {
+                                BAR = "FOO"
+                              }
+                              steps {
+                                echo "test 1"
+                              }
+                            } 
+                            stage("test2") {
+                              steps {
+                                echo "test 2"
+                              }
+                            }
+                          }
+                        }
+
                         stage("deploy") {
                             when {
                                 branch "master"
                             }
                             steps {
-                                bat "run-deploy.bat"
+                                sh "run-deploy.bat"
                             }
                         }
                     }
@@ -35,12 +58,13 @@ pipeline {
                                 sh "./run-build.sh"
                             }
                         }
+
                         stage("deploy") {
-                             when {
-                                 branch "master"
-                             }
-                             steps {
-                                sh "./run-deploy.sh"
+                            when {
+                                branch "master"
+                            }
+                            steps {
+                                sh "run-deploy.bat"
                             }
                         }
                     }

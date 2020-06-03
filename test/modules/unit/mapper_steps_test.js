@@ -4,7 +4,7 @@ const expect = require('chai').expect;
 const { directiveToCommand, fnPerVerb } = require('../../../mapping/mapper_steps.js');
 /* eslint-enable no-unused-vars */
 
-describe('jenkins', () => {
+describe('steps', () => {
   describe('#directiveToCommand', () => {
     it('handles sh', () => {
       const tester = {
