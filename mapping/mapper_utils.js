@@ -9,4 +9,8 @@ const assignedFields = (obj) => {
   return Object.values(obj).filter((value) => value !== undefined).length > 0;
 };
 
-module.exports = { isLiteral, assignedFields };
+const skewerCase = (string) => {
+  return string.replace(/ /g, '-').toLowerCase();
+};
+
+module.exports = { isLiteral, assignedFields, skewerCase };

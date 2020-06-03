@@ -12,7 +12,7 @@ const { CircleJob } = require('../model/CircleJob.js');
 const { CircleWorkflowItem } = require('../model/CircleWorkflowItem.js');
 const { CircleWorkflowJobCondition } = require('../model/CircleWorkflowJobCondition.js');
 const { fnPerVerb } = require('./mapper_steps.js');
-const { assignedFields } = require('./mapper_utils.js');
+const { assignedFields, skewerCase } = require('./mapper_utils.js');
 const { mapConditions } = require('./mapper_conditions.js');
 const { mapEnvironment } = require('./mapper_directives.js');
 
@@ -46,22 +46,22 @@ const mapStages = (stages, config) => {
   // Hard-coded workflow name--no multiple workflow support yet
   config.workflows['build-and-test'] = workflow;
 
-  let nextRequires = undefined;
-  let envDepth = 1;
-  let appendName = undefined;
+  let nextRequires; // Track the previous job(s) to be set as the condition for the next
+  let appendName; // Append the parent nonstep stage name to prevent name collisions
 
-  const mapChildren = (nestedStages, isParallel) => {
+  const mapChildren = (nestedStages, isParallel, envDepth = 1) => {
+    // Creates a fan-out/fan-in workflow when going from parallel to sequential
     let requires = [];
 
     nestedStages.forEach((prop) => {
       if (prop.branches) {
-        const workflowJobCondition = new CircleWorkflowJobCondition();
+        const conditions = new CircleWorkflowJobCondition();
 
         if (nextRequires) {
-          workflowJobCondition.requires = nextRequires;
+          conditions.requires = nextRequires;
         }
 
-        const [jobName, job] = mapJob(prop, workflow, workflowJobCondition, appendName, envDepth);
+        const [jobName, job] = mapJob(prop, workflow, conditions, appendName, envDepth);
 
         if (isParallel) {
           requires.push(jobName);
@@ -71,11 +71,9 @@ const mapStages = (stages, config) => {
 
         config.jobs[jobName] = job;
       } else {
-        appendName = prop.name;
+        appendName = skewerCase(prop.name);
         mapEnvironment(prop, envDepth);
-        envDepth++;
-        mapChildren(prop.parallel || prop.stages, prop.parallel);
-        envDepth--;
+        mapChildren(prop.parallel || prop.stages, prop.parallel, envDepth + 1);
         appendName = null;
       }
     });
@@ -96,7 +94,7 @@ const mapJob = (stage, workflow, conditions, appendName, envDepth) => {
 
   mapConditions(stage, conditions);
 
-  let jobName = stage.name.replace(/ /g, '-').toLowerCase();
+  let jobName = skewerCase(stage.name);
 
   if (appendName) {
     jobName += `-${appendName}`;
