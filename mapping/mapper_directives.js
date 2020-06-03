@@ -30,8 +30,6 @@ const prepMapEnvironment = (envVarLayers = {}) => {
 
       return mappedEnvVars;
     }
-
-    return undefined;
   };
 };
 
