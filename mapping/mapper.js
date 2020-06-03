@@ -14,7 +14,7 @@ const { CircleWorkflowJobCondition } = require('../model/CircleWorkflowJobCondit
 const { fnPerVerb } = require('./mapper_steps.js');
 const { assignedFields, skewerCase } = require('./mapper_utils.js');
 const { mapConditions } = require('./mapper_conditions.js');
-const { mapEnvironment } = require('./mapper_directives.js');
+const { prepMapEnvironment } = require('./mapper_directives.js');
 
 const map = (arr) => {
   const config = new CircleConfig(2.1);
@@ -27,7 +27,8 @@ const map = (arr) => {
     return undefined;
   }
 
-  mapEnvironment(pipeline, 0);
+  const mapLocalEnv = prepMapEnvironment();
+  mapLocalEnv(pipeline, 0);
 
   const stages = pipeline['stages'];
 
@@ -36,12 +37,12 @@ const map = (arr) => {
     return undefined;
   }
 
-  mapStages(stages, config);
+  mapStages(stages, mapLocalEnv, config);
 
   return config;
 };
 
-const mapStages = (stages, config) => {
+const mapStages = (stages, mapLocalEnv, config) => {
   const workflow = new CircleWorkflowItem();
   // Hard-coded workflow name--no multiple workflow support yet
   config.workflows['build-and-test'] = workflow;
@@ -61,7 +62,14 @@ const mapStages = (stages, config) => {
           conditions.requires = nextRequires;
         }
 
-        const [jobName, job] = mapJob(prop, workflow, conditions, appendName, envDepth);
+        const [jobName, job] = mapJob(
+          prop,
+          mapLocalEnv,
+          workflow,
+          conditions,
+          appendName,
+          envDepth
+        );
 
         if (isParallel) {
           requires.push(jobName);
@@ -72,7 +80,7 @@ const mapStages = (stages, config) => {
         config.jobs[jobName] = job;
       } else {
         appendName = skewerCase(prop.name);
-        mapEnvironment(prop, envDepth);
+        mapLocalEnv(prop, envDepth);
         mapChildren(prop.parallel || prop.stages, prop.parallel, envDepth + 1);
         appendName = null;
       }
@@ -86,11 +94,11 @@ const mapStages = (stages, config) => {
   mapChildren(stages);
 };
 
-const mapJob = (stage, workflow, conditions, appendName, envDepth) => {
+const mapJob = (stage, mapLocalEnv, workflow, conditions, appendName, envDepth) => {
   let job = new CircleJob();
 
   job.docker = [{ image: 'cimg/base' }];
-  job.environment = mapEnvironment(stage, envDepth);
+  job.environment = mapLocalEnv(stage, envDepth);
 
   mapConditions(stage, conditions);
 
