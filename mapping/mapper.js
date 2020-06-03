@@ -65,7 +65,7 @@ const mapStages = (stages, config) => {
         if (isParallel) {
           requires.push(jobName);
         } else {
-          nextRequires = jobName;
+          nextRequires = [jobName];
         }
 
         config.jobs[jobName] = job;
