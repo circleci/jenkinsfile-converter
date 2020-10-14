@@ -13,7 +13,7 @@ pipeline {
        * subsequent stage I can use a different version of the tool or different tools.
        */
       tools {
-        maven "apache-maven-3.0.1"
+        maven "Default"
       }
       steps {
         echo "hello"

@@ -1,8 +1,8 @@
 pipeline {
   // use the 'tools' section to use specific tool versions already defined in Jenkins config 
   tools {
-    maven "apache-maven-3.1.0"
-    jdk "default"
+    maven "Default"
+    jdk "Default"
   }
 
   // run on any available agent
