@@ -29,19 +29,7 @@ class MainApp {
         // Convert Jenkinsfile to config.yml
         this.expWrapper.armEndpoint(
             'POST',
-            '/i/to-config-yml',
-            JenkinsToCCIResponder.convertJenkinsfileToConfigYml
-        );
-        // '/i' is a shorthand
-        this.expWrapper.armEndpoint(
-            'POST',
             '/i',
-            JenkinsToCCIResponder.convertJenkinsfileToConfigYml
-        );
-        // /i/do is also a shorthand
-        this.expWrapper.armEndpoint(
-            'POST',
-            '/i/do',
             JenkinsToCCIResponder.convertJenkinsfileToConfigYml
         );
 
