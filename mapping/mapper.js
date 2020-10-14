@@ -109,7 +109,21 @@ const mapJob = (stage, mapEnvironment, workflow, conditions, config) => {
     workflow.jobs.push(workflowJobName);
   }
 
-  job.steps = fnPerVerb(stage.branches[0].steps);
+  if (stage.stages) {
+    // TODO: Implement support for nested stages
+    job.steps = [
+      {
+        run: {
+          name: 'Nested stage not unsupported',
+          command: 'echo "Nested stages are not supported yet."',
+          JFC_STACK_TRACE: JSON.stringify(stage)
+        }
+      }
+    ];
+  } else {
+    job.steps = fnPerVerb(stage.branches[0].steps);
+  }
+
   config[workflowJobName] = job;
 };
 
