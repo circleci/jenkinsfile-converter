@@ -100,7 +100,7 @@ class JenkinsToCCIResponder {
             .post(
                 process.env.JFC_JENKINS_URL
                     ? process.env.JFC_JENKINS_URL
-                    : 'https://jenkinsto.cc/i/to-json',
+                    : 'https://preview.jenkinsto.cc/i/to-json',
                 req.body.toString('utf-8'),
                 {
                     transformResponse: (res) => res

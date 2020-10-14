@@ -189,7 +189,7 @@ describe('convertJenkinsfileToJSON', () => {
 
     test('axios', () => {
         expect(mockAxiosPost.mock.calls[0][0]).toBe(
-            'https://jenkinsto.cc/i/to-json'
+            'https://preview.jenkinsto.cc/i/to-json'
         );
         expect(mockAxiosPost.mock.calls[0][1]).toBe(reqBody);
         expect(mockAxiosPost.mock.calls[1][0]).toBe(customJenkins);

@@ -4,7 +4,7 @@ const querystring = require('querystring');
 const { map } = require('./mapping/mapper.js');
 const { UpperStreamError, ParseFailure, MapperError } = require('./errors.js');
 
-const jenkinsTarget = process.env.JFC_JENKINS_URL ? process.env.JFC_JENKINS_URL : 'https://jenkinsto.cc/i/to-json';
+const jenkinsTarget = process.env.JFC_JENKINS_URL ? process.env.JFC_JENKINS_URL : 'https://preview.jenkinsto.cc/i/to-json';
 
 // Main from here
 const jenkinsToCCI = async (jenkinsfile, rid = '') => {
