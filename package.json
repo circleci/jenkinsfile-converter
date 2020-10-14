@@ -10,7 +10,7 @@
     "build": "webpack --mode production",
     "build:dev": "webpack --mode development",
     "test": "mocha --recursive",
-    "lint": "eslint --fix ./**/*.js",
+    "lint": "eslint --fix .",
     "prettier": "prettier --write ./**/*.js"
   },
   "repository": {
