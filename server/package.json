@@ -31,7 +31,7 @@
         "@typescript-eslint/eslint-plugin": "^2.30.0",
         "@typescript-eslint/parser": "^2.30.0",
         "eslint": "^6.8.0",
-        "handlebars": "^4.7.6",
+        "handlebars": "^4.7.7",
         "html-loader": "^1.1.0",
         "husky": ">=4",
         "jest": "^25.5.0",
